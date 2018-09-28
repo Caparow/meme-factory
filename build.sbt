@@ -1,9 +1,9 @@
 name := "meme-factory"
 
 version := "1.0"
-scalaVersion := "2.12.2"
+scalaVersion := "2.12.6"
 
-lazy val `memefactory` = (project in file(".")).enablePlugins(PlayScala)
+lazy val `meme-factory` = (project in file(".")).enablePlugins(PlayScala)
 val circeVersion = "0.9.3"
 
 // default
@@ -30,6 +30,10 @@ libraryDependencies ++= Seq(
 
   // auth JWT
   "com.jason-goodwin" %% "authentikat-jwt" % "0.4.5"
+)
+
+addCompilerPlugin(
+  "org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full
 )
 
 // circe
