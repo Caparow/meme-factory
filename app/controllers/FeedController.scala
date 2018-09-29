@@ -1,7 +1,7 @@
 package controllers
 
 import com.google.inject.Inject
-import models.{CommentItem, PostItem}
+import models.{CommentItem, MemeItem}
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.persistence.PostsPersistence.FeedOffset
 
@@ -43,7 +43,7 @@ class FeedController @Inject()(cc: ControllerComponents) extends AbstractControl
     Ok(views.html.index("Your new application is ready."))
   }
 
-  def createPost(postItem: PostItem) = Action {
+  def createPost(postItem: MemeItem) = Action {
     Ok(views.html.index("Your new application is ready."))
   }
 

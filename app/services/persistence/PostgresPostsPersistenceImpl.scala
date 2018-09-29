@@ -1,11 +1,11 @@
 package services.persistence
-import models.{CommentItem, CommentItemWithId, PostItem, PostItemWithId}
+import models.{CommentItem, CommentItemWithId, MemeItem, MemeItemWithId}
 
 class PostgresPostsPersistenceImpl(connector: PostgresConnector) extends PostsPersistence {
 
   override def createComment(commentItem: CommentItem): Result[CommentItemWithId] = ???
 
-  override def createPost(feedItem: PostItem): Result[PostItemWithId] = ???
+  override def createPost(feedItem: MemeItem): Result[MemeItemWithId] = ???
 
   override def deletePost(id: Long): Result[Unit] = ???
 
@@ -19,7 +19,7 @@ class PostgresPostsPersistenceImpl(connector: PostgresConnector) extends PostsPe
 
   override def downVoteComment(id: Long): Result[Unit] = ???
 
-  override def getMostPopular(forDays: Int, offset: PostsPersistence.FeedOffset): Result[List[PostItemWithId]] = ???
+  override def getMostPopular(forDays: Int, offset: PostsPersistence.FeedOffset): Result[List[MemeItemWithId]] = ???
 
-  override def getPostWithComments(id: Long): Result[PostItemWithId] = ???
+  override def getPostWithComments(id: Long): Result[MemeItemWithId] = ???
 }

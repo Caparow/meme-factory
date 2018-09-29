@@ -1,13 +1,13 @@
 package services.persistence
 
-import models.{CommentItem, CommentItemWithId, PostItem, PostItemWithId}
+import models.{CommentItem, CommentItemWithId, MemeItem, MemeItemWithId}
 import services.persistence.PostsPersistence.FeedOffset
 
 class DummyPostsPersistenceImpl extends PostsPersistence {
 
   override def createComment(commentItem: CommentItem): Result[CommentItemWithId] = ???
 
-  override def createPost(feedItem: PostItem): Result[PostItemWithId] = ???
+  override def createPost(feedItem: MemeItem): Result[MemeItemWithId] = ???
 
   override def deletePost(id: Long): Result[Unit] = ???
 
@@ -21,7 +21,7 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
 
   override def downVoteComment(id: Long): Result[Unit] = ???
 
-  override def getMostPopular(forDays: Int, offset: FeedOffset): Result[List[PostItemWithId]] = ???
+  override def getMostPopular(forDays: Int, offset: FeedOffset): Result[List[MemeItemWithId]] = ???
 
-  override def getPostWithComments(id: Long): Result[PostItemWithId] = ???
+  override def getPostWithComments(id: Long): Result[MemeItemWithId] = ???
 }

@@ -5,7 +5,7 @@ import services.persistence.PostsPersistence.FeedOffset
 
 trait PostsPersistence extends Result {
 
-  def createPost(feedItem: PostItem): Result[PostItemWithId]
+  def createPost(feedItem: MemeItem): Result[MemeItemWithId]
 
   def deletePost(id: Long): Result[Unit]
 
@@ -21,9 +21,9 @@ trait PostsPersistence extends Result {
 
   def downVoteComment(id: Long): Result[Unit]
 
-  def getMostPopular(forDays: Int, offset: FeedOffset): Result[List[PostItemWithId]] = ???
+  def getMostPopular(forDays: Int, offset: FeedOffset): Result[List[MemeItemWithId]] = ???
 
-  def getPostWithComments(id: Long): Result[PostItemWithId] = ???
+  def getPostWithComments(id: Long): Result[MemeItemWithId] = ???
 }
 
 object PostsPersistence {
