@@ -1,12 +1,15 @@
 package services.persistence
 
+import cats.effect.IO
 import models._
 
-trait UsersPersistence extends Result {
+trait UsersPersistence {
 
-  def create(user: User): Result[UserWithId]
+  def create(user: User): IO[UserWithId]
 
-  def delete(id: Long): Result[Unit]
+  def delete(id: Long): IO[Unit]
 
-  def update(user: UserWithId): Result[UserWithId]
+  def update(user: UserWithId): IO[UserWithId]
+
+  def get(login: String, password: String): IO[Option[UserWithId]]
 }

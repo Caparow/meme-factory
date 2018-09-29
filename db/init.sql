@@ -10,15 +10,15 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
     "id" serial,
     "login" text NOT NULL,
     "password" text NOT NULL,
-    "name" text,
-    "surname" timestamp NOT NULL,
+    "user_name" text,
+    "surname" timestamp,
     "avatar" text,
     PRIMARY KEY ("id")
 );
 CREATE TABLE IF NOT EXISTS "public"."comments" (
     "id" serial,
     "meme_id" integer NOT NULL,
-    "text" text NOT NULL,
+    "comment" text NOT NULL,
     "points" integer NOT NULL,
     "added_at" timestamp NOT NULL,
     "author" integer not null,

@@ -6,7 +6,7 @@ import io.circe.generic.semiauto._
 
 case class CommentItem(
                         memeId: Long
-                        , text: String
+                        , comment: String
                         , timestamp: String
                         , points: Long
                         , author: Long

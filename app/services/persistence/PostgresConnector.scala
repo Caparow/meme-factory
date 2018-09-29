@@ -13,7 +13,7 @@ final class PostgresConnector(cfg: PostgresCfg) {
     HikariTransactor(ds)
   }
 
-  def query[T](metaName: String, query: ConnectionIO[T]): cats.effect.IO[T] = {
+  def query[T](query: ConnectionIO[T]): cats.effect.IO[T] = {
     query.transact(transactor)
   }
 
