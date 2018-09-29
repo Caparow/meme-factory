@@ -1,0 +1,26 @@
+@(msg: String)
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>Login</title>
+    </head>
+    <body>
+        <div class="container">
+
+            <a href="/user/register" class="btn btn-info" value="Sign Up" style="float: right;">Sign Up</a>
+
+            <form class="form-signin" action="/user/loginForm" method="post" role="form">
+                <h2 class="form-signin-heading">@msg</h2>
+                <label for="loginField" class="sr-only">Email address</label>
+                <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" required autofocus>
+                <label for="passwdField" class="sr-only">Password</label>
+                <input type="password" id="passwdField" name="passwdField" class="form-control" placeholder="Password" required>
+
+                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign in">
+            </form>
+
+        </div> <!-- /container -->
+    </body>
+</html>

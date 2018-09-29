@@ -1,13 +1,15 @@
 package services.persistence
 
 import cats.effect.IO
+import com.google.inject.{Inject, Singleton}
 import doobie._
 import doobie.implicits._
 import models._
 import services.persistence.PostgresPostsPersistenceImpl._
 import services.persistence.PostsPersistence.FeedOffset
 
-class PostgresPostsPersistenceImpl(connector: PostgresConnector) extends PostsPersistence {
+@Singleton
+class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) extends PostsPersistence {
 
   override def createComment(commentItem: CommentItem): IO[CommentItemWithId] = {
     val commentQuery = for {

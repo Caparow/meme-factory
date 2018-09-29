@@ -3,18 +3,20 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-GET        /hottest              controllers.FeedController.hottest()
-GET        /latest               controllers.FeedController.latest()
-GET        /newPost              controllers.FeedController.createPostForm
+GET         /hottest                  controllers.FeedController.hottest()
+GET         /latest                   controllers.FeedController.latest()
+GET         /newPost                  controllers.FeedController.createPostForm
 
 
-GET        /user/login           controllers.UserController.loginForm
-GET        /user/register        controllers.UserController.registerForm
-GET        /user/update          controllers.UserController.updateForm
+GET         /user/login               controllers.UserController.login()
+POST        /user/loginForm           controllers.UserController.loginForm
+GET         /user/register            controllers.UserController.register()
+POST        /user/registerForm        controllers.UserController.registerForm
+GET         /user/update              controllers.UserController.updateForm
 
-GET        /convert              controllers.ConverterController.convertForm
+POST        /converterForm            controllers.ConverterController.convertForm
 
 # Map static resources from the /public folder to the /assets URL path
-GET        /assets/*file         controllers.Assets.versioned(path="/public", file: Asset)
+GET         /assets/*file             controllers.Assets.versioned(path="/public", file: Asset)
 
       

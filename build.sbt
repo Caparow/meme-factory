@@ -29,7 +29,9 @@ libraryDependencies ++= Seq(
   "org.typelevel" %% "cats-core" % "1.4.0",
 
   // auth JWT
-  "com.jason-goodwin" %% "authentikat-jwt" % "0.4.5"
+  "com.jason-goodwin" %% "authentikat-jwt" % "0.4.5",
+
+  "com.github.pureconfig" %% "pureconfig" % "0.9.2"
 )
 
 addCompilerPlugin(

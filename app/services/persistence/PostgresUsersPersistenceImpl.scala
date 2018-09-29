@@ -1,12 +1,14 @@
 package services.persistence
 
 import cats.effect.IO
+import com.google.inject.{Inject, Singleton}
 import doobie.implicits._
 import doobie.util.fragment.Fragment
 import models.{User, UserWithId}
 import services.persistence.PostgresUsersPersistenceImpl._
 
-class PostgresUsersPersistenceImpl(connector: PostgresConnector) extends UsersPersistence {
+@Singleton
+class PostgresUsersPersistenceImpl @Inject()(connector: PostgresConnector) extends UsersPersistence {
 
   override def create(user: User): IO[UserWithId] = {
     val userQ = for {
@@ -39,11 +41,11 @@ class PostgresUsersPersistenceImpl(connector: PostgresConnector) extends UsersPe
 
 object PostgresUsersPersistenceImpl {
   def getUserStmt(id: Long): Fragment = {
-    sql"""select id, login,password,name,surname,avatar from users where id = $id;"""
+    sql"""select id, login,password,user_name,surname,avatar from users where id = $id;"""
   }
 
   def getUserByLogAndPassStmt(login: String, pass: String): Fragment = {
-    sql"""select id, login,password,name,surname,avatar from users where login = $login and password = $pass;"""
+    sql"""select id, login,password,user_name,surname,avatar from users where login = $login and password = $pass;"""
   }
 
   def deleteUserStmt(id: Long): Fragment = {

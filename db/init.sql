@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
     "login" text NOT NULL,
     "password" text NOT NULL,
     "user_name" text,
-    "surname" timestamp,
+    "surname" text,
     "avatar" text,
     PRIMARY KEY ("id")
 );

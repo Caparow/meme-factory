@@ -1,8 +1,10 @@
 package services
+import com.google.inject.{Inject, Singleton}
 import models.{CommentItemWithId, MemeItem, MemeItemWithId}
 import services.persistence.PostsPersistence.FeedOffset
 
-class MemeServiceImpl extends MemeService {
+@Singleton
+class MemeServiceImpl @Inject() extends MemeService {
   override def createMeme(user: Long, feedItem: MemeItem): Result[MemeItemWithId] = ???
 
   override def createComment(user: Long, feedItem: MemeItem): Result[CommentItemWithId] = ???

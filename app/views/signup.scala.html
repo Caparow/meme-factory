@@ -1,0 +1,31 @@
+@()
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>SignUp</title>
+    </head>
+    <body>
+        <div class="container">
+
+            <a href="/user/login" class="btn btn-info" value="Log In" style="float: right;">Log In</a>
+
+            <form class="form-signup" action="/user/registerForm" method="post" role="form">
+                <h2 class="form-signin-heading">Please sign up</h2>
+                <label for="loginField" class="sr-only">Email address</label>
+                <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" required autofocus>
+                <label for="passwdField" class="sr-only">Password</label>
+                <input type="password" id="passwdField" name="passwdField" class="form-control" placeholder="Password" required>
+                <label for="firstNameField" class="sr-only">First Name</label>
+                <input type="text" id="firstNameField" name="firstNameField" class="form-control" placeholder="First Name">
+
+                <label for="surnameField" class="sr-only">Surname</label>
+                <input type="text" id="surnameField" name="surnameField" class="form-control" placeholder="Surname">
+
+                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign Up">
+            </form>
+
+        </div> <!-- /container -->
+    </body>
+</html>
