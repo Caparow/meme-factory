@@ -13,7 +13,11 @@ case class User(
 
 case class UserWithId(
                        id: Long
-                       , user: User
+                       , login: String
+                       , pass: String
+                       , name: Option[String]
+                       , surname: Option[String]
+                       , avatar: Option[String]
                      )
 
 

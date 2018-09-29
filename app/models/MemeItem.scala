@@ -2,6 +2,7 @@ package models
 
 import io.circe._
 import io.circe.generic.semiauto._
+import CommentItem._
 
 case class MemeItem(
                      title: String
@@ -13,7 +14,19 @@ case class MemeItem(
 
 case class MemeItemWithId(
                            id: Long
-                           , memeItem: MemeItem
+                           , title: String
+                           , timestamp: String
+                           , content: List[Content]
+                           , points: Long
+                           , author: Long
+                         )
+
+case class MemeItemWithoutContent(
+                           id: Long
+                           , title: String
+                           , timestamp: String
+                           , points: Long
+                           , author: Long
                          )
 
 case class MemeItemWithComments(
@@ -22,7 +35,7 @@ case class MemeItemWithComments(
                                )
 
 
-case class Content(Value: String, contentType: String)
+case class Content(memeID: Long, contentType: String, content: String, num: Long)
 
 object ContentTypes{
   val HTML = "HTML"

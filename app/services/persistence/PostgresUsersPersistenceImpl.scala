@@ -59,7 +59,7 @@ object PostgresUsersPersistenceImpl {
   }
 
   def updateUserStmt(user: UserWithId): Fragment = {
-    import user.user._
+    import user._
     sql"""
          |update users set
          |login = $login,

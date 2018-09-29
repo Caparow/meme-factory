@@ -13,8 +13,12 @@ case class CommentItem(
                       )
 
 case class CommentItemWithId(
-                            id: Long
-                            , commentItem: CommentItem
+                              id: Long
+                              , memeId: Long
+                              , comment: String
+                              , timestamp: String
+                              , points: Long
+                              , author: Long
                             )
 
 object CommentItem {

@@ -14,7 +14,8 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
   override def createPost(feedItem: MemeItem): IO[MemeItemWithId] = synchronized {
     val id = Random.nextInt()
     memes.put(id, feedItem)
-    IO.pure(MemeItemWithId(id, feedItem))
+    import feedItem._
+    IO.pure(MemeItemWithId(id, title, timestamp, content, points, author))
   }
 
   override def deletePost(id: Long): IO[Unit] = synchronized {
@@ -43,7 +44,8 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
   override def createComment(commentItem: CommentItem): IO[CommentItemWithId] = synchronized {
     val id = Random.nextInt()
     comments.put(id, commentItem)
-    IO.pure(CommentItemWithId(id, commentItem))
+    import commentItem._
+    IO.pure(CommentItemWithId(id, memeId, comment, timestamp, points, author))
   }
 
 
@@ -72,7 +74,10 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
 
   override def getMostPopular(forDays: Int, offset: FeedOffset): IO[List[MemeItemWithId]] = synchronized {
     IO.pure{
-      memes.map{case (k, v) => MemeItemWithId(k,v)}.toList
+      memes.map{case (k, v) =>
+        import v._
+        MemeItemWithId(k, title, timestamp, content, points, author)
+      }.toList
 
     }
   }
@@ -80,16 +85,23 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
 
   override def getLatest(offset: FeedOffset): IO[List[MemeItemWithId]] = synchronized {
     IO.pure{
-      memes.map{case (k, v) => MemeItemWithId(k,v)}.toList
+      memes.map{case (k, v) =>
+        import v._
+        MemeItemWithId(k, title, timestamp, content, points, author)
+      }.toList
     }
   }
 
 
   override def getPostWithComments(id: Long): IO[MemeItemWithComments] = synchronized {
     IO.pure{
-      val c = comments.filter(i => i._2.memeId == id).map{case (k,v) => CommentItemWithId(k,v)}.toList
+      val c = comments.filter(i => i._2.memeId == id).map{ case (k,v) =>
+        import v._
+        CommentItemWithId(k, memeId, comment, timestamp, points, author)
+      }.toList
       val m = memes(id)
-      MemeItemWithComments(MemeItemWithId(id,m), c)
+      import m._
+      MemeItemWithComments(MemeItemWithId(id, title, timestamp, content, points, author), c)
     }
   }
 

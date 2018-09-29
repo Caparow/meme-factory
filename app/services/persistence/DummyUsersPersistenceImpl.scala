@@ -12,7 +12,8 @@ class DummyUsersPersistenceImpl extends UsersPersistence {
   override def create(user: User): IO[UserWithId] = synchronized {
     val id = Random.nextInt()
     content.put(id, user)
-    IO.pure(UserWithId(id, user))
+    import user._
+    IO.pure(UserWithId(id, login, pass, name, surname, avatar))
   }
 
   override def delete(id: Long): IO[Unit] = synchronized {
@@ -20,11 +21,15 @@ class DummyUsersPersistenceImpl extends UsersPersistence {
   }
 
   override def update(user: UserWithId): IO[UserWithId] = synchronized {
-    content.put(user.id, user.user)
+    import user._
+    content.put(user.id, User(login, pass, name, surname, avatar))
     IO.pure(user)
   }
 
   override def get(login: String, password: String): IO[Option[UserWithId]] = synchronized {
-    IO.pure(content.find{ u => u._2.login == login && u._2.pass == password}.map{case (k,v) => UserWithId(k,v)})
+    IO.pure(content.find{ u => u._2.login == login && u._2.pass == password}.map{ case (k,v) =>
+      import v._
+      UserWithId(k, v.login, pass, name, surname, avatar)
+    })
   }
 }

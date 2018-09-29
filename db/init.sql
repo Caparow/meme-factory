@@ -29,6 +29,6 @@ CREATE TABLE IF NOT EXISTS "public"."content" (
     "meme_id" integer NOT NULL,
     "content_type" text NOT NULL,
     "content" integer NOT NULL,
-    "number" integer NOT NULL,
+    "num" integer NOT NULL,
     PRIMARY KEY ("id")
 );
