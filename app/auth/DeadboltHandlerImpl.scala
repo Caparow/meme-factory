@@ -5,7 +5,7 @@ import be.objectify.deadbolt.scala.{AuthenticatedRequest, DeadboltHandler, Dynam
 import com.google.inject.{Inject, Singleton}
 import configs.DeadboltConfig
 import controllers.routes
-import models.auth.{Admin, Anon, User}
+import models.auth.{Anon, User}
 import play.api.mvc.{Request, Result, Results}
 
 import scala.concurrent.Future
@@ -19,7 +19,6 @@ class DeadboltHandlerImpl @Inject()(deadboltConfig: DeadboltConfig) extends Dead
       request.session.get(deadboltConfig.roleKey).map { role =>
         val identifier = request.session(deadboltConfig.identifierKey)
         role match {
-          case "admin" => Admin(identifier, authToken)
           case "anon" => Anon(identifier)
           case "user" => User(identifier, authToken)
           case _ =>

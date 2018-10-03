@@ -23,20 +23,20 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
   }
 
 
-  override def upVotePost(id: Long): IO[Unit] = synchronized {
+  override def upVotePost(id: Long): IO[Long] = synchronized {
     IO.pure {
       val m = memes(id)
       memes.put(id, m.copy(points = m.points + 1))
-      ()
+      m.points + 1
     }
   }
 
 
-  override def downVotePost(id: Long): IO[Unit] = synchronized {
+  override def downVotePost(id: Long): IO[Long] = synchronized {
     IO.pure {
       val m = memes(id)
       memes.put(id, m.copy(points = m.points - 1))
-      ()
+      m.points - 1
     }
   }
 
@@ -54,20 +54,20 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
   }
 
 
-  override def upVoteComment(id: Long): IO[Unit] = synchronized {
+  override def upVoteComment(id: Long): IO[Long] = synchronized {
     IO.pure {
       val m = comments(id)
       comments.put(id, m.copy(points = m.points + 1))
-      ()
+      m.points + 1
     }
   }
 
 
-  override def downVoteComment(id: Long): IO[Unit] = synchronized {
+  override def downVoteComment(id: Long): IO[Long] = synchronized {
     IO.pure {
       val m = comments(id)
       comments.put(id, m.copy(points = m.points - 1))
-      ()
+      m.points - 1
     }
   }
 

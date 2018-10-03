@@ -1,8 +1,11 @@
 package models
 
+import java.time.LocalDateTime
+import java.time.format.{DateTimeFormatter, DateTimeParseException}
+
+import CommentItem._
 import io.circe._
 import io.circe.generic.semiauto._
-import CommentItem._
 
 case class MemeItem(
                      title: String
@@ -44,6 +47,24 @@ object ContentTypes{
 }
 
 object MemeItem {
+  final def decodeLocalDateTime(formatter: DateTimeFormatter): Decoder[LocalDateTime] =
+    Decoder.instance { c =>
+      c.as[String] match {
+        case Right(s) => try Right(LocalDateTime.parse(s, formatter)) catch {
+          case _: DateTimeParseException => Left(DecodingFailure("LocalDateTime", c.history))
+        }
+        case l @ Left(_) => l.asInstanceOf[Decoder.Result[LocalDateTime]]
+      }
+    }
+
+  final def encodeLocalDateTime(formatter: DateTimeFormatter): Encoder[LocalDateTime] =
+    Encoder.instance(time => Json.fromString(time.format(formatter)))
+
+
+
+  implicit final val decodeLocalDateTimeDefault: Decoder[LocalDateTime] = decodeLocalDateTime(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+  implicit final val encodeLocalDateTimeDefault: Encoder[LocalDateTime] = encodeLocalDateTime(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
+
   implicit val contentEncoder: Encoder[Content] = deriveEncoder[Content]
   implicit val contentDecoder: Decoder[Content] = deriveDecoder[Content]
 

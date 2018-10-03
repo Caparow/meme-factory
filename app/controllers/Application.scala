@@ -20,6 +20,10 @@ class Application @Inject()(
     Results.Redirect(routes.UserController.login())
   }
 
+  def error(m: String) = Action { _ =>
+    Ok(views.html.error(m))
+  }
+
   def authError(cause: String) = Action {
     Ok(views.html.index(s"Authentication error. Cause:$cause"))
   }

@@ -1,7 +1,7 @@
 CREATE TABLE IF NOT EXISTS "public"."memes" (
     "id" serial,
     "title" text NOT NULL,
-    "added_at" timestamp NOT NULL,
+    "added_at" text NOT NULL,
     "points" integer NOT NULL,
     "author" integer NOT NULL,
     PRIMARY KEY ("id")
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS "public"."comments" (
     "meme_id" integer NOT NULL,
     "comment" text NOT NULL,
     "points" integer NOT NULL,
-    "added_at" timestamp NOT NULL,
+    "added_at" text NOT NULL,
     "author" integer not null,
     PRIMARY KEY ("id")
 );

@@ -6,9 +6,11 @@
 
 GET         /                         controllers.Application.index()
 GET         /autherror                controllers.Application.authError(cause : String)
+GET         /error                    controllers.Application.error(cause : String)
 GET         /hottest                  controllers.FeedController.hottest()
 GET         /latest                   controllers.FeedController.latest()
-GET         /newPost                  controllers.FeedController.createPostForm
+GET         /newPost                  controllers.FeedController.createPost
+POST         /newPostForm              controllers.FeedController.createPostForm
 
 
 GET         /user/login               controllers.UserController.login()

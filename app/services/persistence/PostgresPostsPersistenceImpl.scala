@@ -1,5 +1,6 @@
 package services.persistence
 
+import cats.data.NonEmptyList
 import cats.effect.IO
 import com.google.inject.{Inject, Singleton}
 import doobie._
@@ -26,7 +27,7 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
       _ <- createPostStmt(memeItem).update.run
       id <- sql"select lastval()".query[Long].unique
       post <- getPostStmt(id).query[MemeItemWithoutContent].unique
-      _ <- createContentStmt(memeItem.content).update.run
+//      _ <- createContentStmt(memeItem.content).update.run
     } yield MemeItemWithId(id, memeItem.title, memeItem.timestamp, memeItem.content, memeItem.points, memeItem.author)
 
     connector.query(postQuery)
@@ -36,21 +37,21 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
     connector.query(deletePostStmt(id).update.run.map(_ => ()))
   }
 
-  override def upVotePost(id: Long): IO[Unit] = {
+  override def upVotePost(id: Long): IO[Long] = {
     val upVote = for {
       meme <- getPostStmt(id).query[MemeItemWithoutContent].unique
       newPoints = meme.points + 1
-      updated <- updatePostStmt(meme.copy(points = newPoints)).update.run.map(_ => ())
-    } yield updated
+      _ <- updatePostStmt(meme.copy(points = newPoints)).update.run.map(_ => ())
+    } yield newPoints
     connector.query(upVote)
   }
 
-  override def downVotePost(id: Long): IO[Unit] = {
+  override def downVotePost(id: Long): IO[Long] = {
     val downVote = for {
       meme <- getPostStmt(id).query[MemeItemWithoutContent].unique
       newPoints = meme.points - 1
-      updated <- updatePostStmt(meme.copy(points= newPoints)).update.run.map(_ => ())
-    } yield updated
+      _ <- updatePostStmt(meme.copy(points = newPoints)).update.run.map(_ => ())
+    } yield newPoints
     connector.query(downVote)
   }
 
@@ -58,21 +59,21 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
     connector.query(deleteCommentStmt(id).update.run.map(_ => ()))
   }
 
-  override def upVoteComment(id: Long): IO[Unit] = {
+  override def upVoteComment(id: Long): IO[Long] = {
     val upVote = for {
       comment <- getCommentStmt(id).query[CommentItemWithId].unique
       newPoints = comment.points + 1
-      updated <- updateCommentStmt(comment.copy(points = newPoints)).update.run.map(_ => ())
-    } yield updated
+      _ <- updateCommentStmt(comment.copy(points = newPoints)).update.run.map(_ => ())
+    } yield newPoints
     connector.query(upVote)
   }
 
-  override def downVoteComment(id: Long): IO[Unit] = {
+  override def downVoteComment(id: Long): IO[Long] = {
     val downVote = for {
       comment <- getCommentStmt(id).query[CommentItemWithId].unique
       newPoints = comment.points - 1
-      updated <- updateCommentStmt(comment.copy(points= newPoints)).update.run.map(_ => ())
-    } yield updated
+      _ <- updateCommentStmt(comment.copy(points = newPoints)).update.run.map(_ => ())
+    } yield newPoints
     connector.query(downVote)
   }
 
@@ -82,13 +83,11 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
 
   private def getMemeList(f: => IO[List[MemeItemWithoutContent]]) = {
     f.flatMap { mm =>
-      val ids = mm.map(_.id).toSet
-      connector.query(getContentStmt(ids).query[Content].to[List]).map {
-        _.groupBy(_.memeID).map { case (k,v) =>
-          val m = mm.find(_.id == k).get
-          import m._
-          MemeItemWithId(id, title, timestamp, v, points, author)
-        }.toList
+      mm.map { meme =>
+        connector.query(getContentStmt(meme.id).query[Content].to[List])
+          .map(c => MemeItemWithId(meme.id, meme.title, meme.timestamp, c, meme.points, meme.author))
+      }.foldLeft(IO.pure(List.empty[MemeItemWithId])) {
+        case (acc, v) => acc.flatMap(ii => v.map(List(_) ++ ii))
       }
     }
   }
@@ -142,8 +141,7 @@ object PostgresPostsPersistenceImpl {
     import memeItem._
     sql"""
          |insert into memes(title, added_at, points, author) values
-         |($title, $timestamp, $points, $author)
-         |returning id;
+         |($title, $timestamp, $points, $author);
        """.stripMargin
   }
 
@@ -151,9 +149,10 @@ object PostgresPostsPersistenceImpl {
     sql"""select id, title, added_at, points, author from memes where id = $id;"""
   }
 
-  def getHottestPostsStmt(forDays: Int, offset: PostsPersistence.FeedOffset): Fragment = {
+  def getHottestPostsStmt(forDays: Int, offset: FeedOffset): Fragment = {
+//    todo: add timestamp
+//    where now() - added_at < '1 day'::interval
     sql"""select id, title, added_at, points, author from memes
-         |where now() - added_at < '1 day'::interval
          |order by points
          |limit ${offset.limit} offset ${offset.offset};""".stripMargin
   }
@@ -179,7 +178,7 @@ object PostgresPostsPersistenceImpl {
   }
 
   def createContentStmt(contentList: List[Content]): Fragment = {
-    def instantiate (content: Content): String = {
+    def instantiate(content: Content): String = {
       s"(${content.memeID}, ${content.contentType}, ${content.content}, ${content.num})"
     }
 
@@ -191,12 +190,11 @@ object PostgresPostsPersistenceImpl {
        """.stripMargin
   }
 
-  def getContentStmt(ids: Set[Long]): Fragment = {
-    val s = ids.toString().replace("Set", "")
+  def getContentStmt(id: Long): Fragment = {
     sql"""
          |select meme_id,content_type,content,num
          |from content
-         |where id in $s
+         |where meme_id = $id
          |;
        """.stripMargin
   }

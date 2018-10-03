@@ -1,0 +1,22 @@
+@(msg: String)
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <link rel="stylesheet" media="screen" href="@routes.Assets.versioned("stylesheets/error.css")">
+  </head>
+  <body>
+    <section id="not-found">
+      <div id="title">@msg</div>
+      <div class="circles">
+        <p>Sorry<br>
+          <small>SOME SHIT HAPPENS</small>
+      </p>
+        <span class="circle big"></span>
+        <span class="circle med"></span>
+        <span class="circle small"></span>
+      </div>
+    </section>
+  </body>
+</html>

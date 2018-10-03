@@ -10,17 +10,17 @@ trait PostsPersistence {
 
   def deletePost(id: Long): IO[Unit]
 
-  def upVotePost(id: Long): IO[Unit]
+  def upVotePost(id: Long): IO[Long]
 
-  def downVotePost(id: Long): IO[Unit]
+  def downVotePost(id: Long): IO[Long]
 
   def createComment(commentItem: CommentItem): IO[CommentItemWithId]
 
   def deleteComment(id: Long): IO[Unit]
 
-  def upVoteComment(id: Long): IO[Unit]
+  def upVoteComment(id: Long): IO[Long]
 
-  def downVoteComment(id: Long): IO[Unit]
+  def downVoteComment(id: Long): IO[Long]
 
   def getMostPopular(forDays: Int, offset: FeedOffset): IO[List[MemeItemWithId]]
 

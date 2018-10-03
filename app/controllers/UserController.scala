@@ -3,11 +3,10 @@ package controllers
 import be.objectify.deadbolt.scala.ActionBuilders
 import com.google.inject.{Inject, Singleton}
 import configs.DeadboltConfig
-import models.auth.Role
-import models.{User, UserWithId}
+import models.auth.{Role, UserRole}
+import models.{ResultExt, User, UserWithId}
 import play.api.libs.ws.WSClient
 import play.api.mvc.{AbstractController, ControllerComponents}
-import play.libs.Json
 import services.UserService
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -19,13 +18,24 @@ class UserController @Inject()(
                                 , deadboltConfig: DeadboltConfig
                                 , userService: UserService
                                 , cc: ControllerComponents
-                              )(implicit ec: ExecutionContext) extends AbstractController(cc) {
+                              )(implicit ec: ExecutionContext) extends AbstractController(cc) with ResultExt {
+
+  private implicit val p = cc.parsers
+
+  private def authAction = actionBuilders.RestrictAction(UserRole.name).defaultHandler()
 
   def loginForm = Action { implicit request =>
     request.body.asFormUrlEncoded.map(_.map { case (k, vs) => k -> vs.head }).map { formData =>
-      Ok(views.html.index(userService.login(formData("loginField"), formData("passwdField")).unsafeRunSync().toString))
+      userService.login(formData("loginField"), formData("passwdField")).convert { user =>
+        import deadboltConfig._
+        Redirect(routes.FeedController.hottest()).withSession(
+          authTokenKey -> "",
+          roleKey -> Role.apply("user").name,
+          identifierKey -> user.id.toString
+        )
+      }.unsafeRunSync()
     }.getOrElse {
-      Ok(views.html.index("sorry"))
+      BadRequest("Form is invalid")
     }
   }
 
@@ -37,23 +47,40 @@ class UserController @Inject()(
         None,
         None,
         None)
-      ).unsafeRunSync() match {
-        case Right(v) =>
-          import deadboltConfig._
-          Redirect(routes.FeedController.hottest()).withSession(
-            authTokenKey -> "",
-            roleKey -> Role.apply("admin").name,
-            identifierKey -> v.id.toString
-          )
-        case Left(_) => Redirect(routes.Application.authError("err"))
-      }
+      ).convert { v =>
+        import deadboltConfig._
+        Redirect(routes.FeedController.hottest()).withSession(
+          authTokenKey -> "",
+          roleKey -> Role.apply("user").name,
+          identifierKey -> v.id.toString
+        )
+      }.unsafeRunSync()
     }.getOrElse {
       BadRequest("Form is invalid")
     }
   }
 
-  def updateForm = Action {
-    Ok(views.html.index("Your new application is ready."))
+  def updateForm = authAction { implicit request =>
+    val id = request.session.get(deadboltConfig.identifierKey).getOrElse("")
+    request.body.asFormUrlEncoded.map(_.map { case (k, vs) => k -> vs.head }).map { formData =>
+      userService.updateProfile(UserWithId(
+        id.toLong,
+        formData("loginField"),
+        formData("passwdField"),
+        None,
+        None,
+        None)
+      ).convert { v =>
+        import deadboltConfig._
+        Redirect(routes.FeedController.hottest()).withSession(
+          authTokenKey -> "",
+          roleKey -> Role.apply("user").name,
+          identifierKey -> v.id.toString
+        )
+      }.unsafeToFuture()
+    }.getOrElse {
+      Future(BadRequest("Form is invalid"))
+    }
   }
 
   def login = Action { implicit request =>
@@ -65,6 +92,7 @@ class UserController @Inject()(
   }
 
   def update(userWithId: UserWithId) = Action {
+    //TODO: provide here update html
     Ok(views.html.index("Your new application is ready."))
   }
 }
