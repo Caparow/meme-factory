@@ -1,7 +1,8 @@
 package services.persistence
 
 import com.google.inject.{Inject, Singleton}
-import com.zaxxer.hikari.{HikariConfig, HikariDataSource}
+import com.zaxxer.hikari.HikariDataSource
+import configs.PostgresCfg
 import doobie.ConnectionIO
 import doobie.hikari.HikariTransactor
 import doobie.hikari.implicits._
@@ -30,17 +31,5 @@ final class PostgresConnectorImpl @Inject()(cfg: PostgresCfg) extends PostgresCo
 
   override def close(): Unit = {
     closeConnectionPool().unsafeRunSync()
-  }
-}
-
-@Singleton
-case class PostgresCfg @Inject()(jdbcDriver : String, url : String, user : String, password : String) {
-  lazy val hikariConfig: HikariConfig = {
-    val config = new HikariConfig()
-    config.setJdbcUrl(url)
-    config.setUsername(user)
-    config.setPassword(password)
-    config.setDriverClassName(jdbcDriver)
-    config
   }
 }

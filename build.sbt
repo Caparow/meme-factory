@@ -31,8 +31,10 @@ libraryDependencies ++= Seq(
   // auth JWT
   "com.jason-goodwin" %% "authentikat-jwt" % "0.4.5",
 
-  "com.github.pureconfig" %% "pureconfig" % "0.9.2"
+  "com.github.pureconfig" %% "pureconfig" % "0.9.2",
+  "be.objectify" %% "deadbolt-scala" % "2.6.0"
 )
+
 
 addCompilerPlugin(
   "org.scalamacros" % "paradise" % "2.1.1" cross CrossVersion.full

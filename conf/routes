@@ -3,6 +3,9 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
+
+GET         /                         controllers.Application.index()
+GET         /autherror                controllers.Application.authError(cause : String)
 GET         /hottest                  controllers.FeedController.hottest()
 GET         /latest                   controllers.FeedController.latest()
 GET         /newPost                  controllers.FeedController.createPostForm

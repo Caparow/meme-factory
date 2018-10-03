@@ -1,14 +1,33 @@
 package controllers
 
-import com.google.inject.Inject
+import be.objectify.deadbolt.scala.{ActionBuilders, AuthenticatedRequest}
+import com.google.inject.{Inject, Singleton}
+import configs.DeadboltConfig
+import play.api.libs.json._
+import models.auth.AdminRole
 import models.{CommentItem, MemeItem}
+import play.api.libs.ws.WSClient
+import play.api.libs.ws._
+import play.api.mvc.BodyParsers
 import play.api.mvc.{AbstractController, ControllerComponents}
 import services.persistence.PostsPersistence.FeedOffset
 
-class FeedController @Inject()(cc: ControllerComponents) extends AbstractController(cc) {
+import scala.concurrent.{ExecutionContext, Future}
 
-  def hottest(feedOffset: FeedOffset = FeedOffset(0, 25)) = Action {
-    Ok(views.html.index("Your new application is ready."))
+@Singleton
+class FeedController @Inject()(
+                                actionBuilders: ActionBuilders
+                                , ws: WSClient
+                                , deadboltConfig: DeadboltConfig
+                                , cc: ControllerComponents
+                              )(implicit ec: ExecutionContext) extends AbstractController(cc) {
+
+  private implicit val p = cc.parsers
+
+  private def authAction = actionBuilders.RestrictAction(AdminRole.name).defaultHandler()
+
+  def hottest(feedOffset: FeedOffset = FeedOffset(0, 25)) = authAction {
+    Future(Ok(views.html.index("Your new application is ready.")))
   }
 
   def latest(feedOffset: FeedOffset = FeedOffset(0, 25)) = Action {
