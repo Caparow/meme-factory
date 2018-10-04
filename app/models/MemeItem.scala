@@ -43,7 +43,8 @@ case class Content(memeID: Long, contentType: String, content: String, num: Long
 object ContentTypes{
   val HTML = "HTML"
   val TEXT = "TEXT"
-  val IMAGE = "IMAGE"
+  val IMAGE_PNG = ".png"
+  val IMAGE_JPG = ".jpg"
 }
 
 object MemeItem {

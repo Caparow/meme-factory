@@ -105,4 +105,11 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
     }
   }
 
+  override def getContent(memeId: Long, num: Long): IO[Option[Content]] = synchronized {
+    IO.pure{
+      val m = memes(memeId)
+      import m._
+      content.find(_.num == num)
+    }
+  }
 }

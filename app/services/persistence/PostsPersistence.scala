@@ -27,6 +27,8 @@ trait PostsPersistence {
   def getLatest(offset: FeedOffset): IO[List[MemeItemWithId]]
 
   def getPostWithComments(id: Long): IO[MemeItemWithComments]
+
+  def getContent(memeId: Long, num: Long): IO[Option[Content]]
 }
 
 object PostsPersistence {

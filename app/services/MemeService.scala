@@ -24,5 +24,7 @@ trait MemeService extends Result {
   def getMostPopular(forDays: Int = 1, offset: FeedOffset = FeedOffset(0, 25)): Result[List[MemeItemWithId]]
 
   def getPostWithComments(id: Long): Result[MemeItemWithComments]
+
+  def getContent(memeId: Long, num: Long): Result[Content]
 }
 

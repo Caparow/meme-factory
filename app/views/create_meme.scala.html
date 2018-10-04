@@ -10,12 +10,17 @@
     <body>
         <div class="container">
 
-            <form class="form-signup" action="/newPostForm" method="post" role="form">
-                <h2 class="form-signin-heading">Create Post:</h2>
+            <h2 class="form-signin-heading">Create Post:</h2>
+            <form class="form-signup" action="/newPostForm" method="post" role="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="titleField" class="sr-only">Title</label>
+                    <input type="text" id="titleField" name="titleField" class="form-control" placeholder="Title" required autofocus>
+                </div>
 
-                <label for="titleField" class="sr-only">Title</label>
-                <input type="text" id="titleField" name="titleField" class="form-control" placeholder="Title" required autofocus>
-
+                <div class="form-group">
+                    <label for="imageField">Image</label>
+                    <input type="file" accept="image/*" name="imageField" class="form-control-file" id="imageField" aria-describedby="fileHelp">
+                </div>
                 <input class="btn btn-lg btn-primary btn-block" type="submit" value="Create">
             </form>
 

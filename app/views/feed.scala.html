@@ -1,0 +1,49 @@
+@(memeList: List[MemeItemWithId])
+
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+        <title>Login</title>
+    </head>
+    <body>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-12">
+                    <a href="/newPost" class="btn btn-info" value="New Post" style="float: right;">New Post</a>
+                </div>
+            </div>
+            @for(meme <- memeList) {
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-header">@{
+                                    meme.title
+                                }</h5>
+                                @for(c <- meme.content.sortWith(_.num < _.num)) {
+                                    @c.contentType match {
+                                        case "TEXT" => {
+                                            <p class="card-text"> @{
+                                                c.content
+                                            } </p>
+                                        }
+                                        case "HTML" => {
+                                            @{
+                                                c.content
+                                            }
+                                        }
+                                        case _ => {
+                                            <img class="card-img" src="@routes.FeedController.image(c.memeID, c.num)" />
+                                        }
+                                    }
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </body>
+</html>

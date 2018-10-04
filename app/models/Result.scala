@@ -23,4 +23,11 @@ trait ResultExt extends Result{
   implicit class ResultIOExt[F](r: IO[F]) {
     def succ: Result[F] = r.map(v => Right(v))
   }
+
+  implicit class ResultIOOptExt[F](r: IO[Option[F]]) {
+    def toRes(msg: String): Result[F] = r.map{
+      case None => Left(ServiceException(1, msg))
+      case Some(v) => Right(v)
+    }
+  }
 }

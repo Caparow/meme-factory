@@ -111,6 +111,10 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
       MemeItemWithComments(post.head, comments)
     }
   }
+
+  override def getContent(memeId: Long, num: Long): IO[Option[Content]] = {
+    connector.query(getContentStmt(memeId, num).query[Content].option)
+  }
 }
 
 object PostgresPostsPersistenceImpl {
@@ -144,6 +148,10 @@ object PostgresPostsPersistenceImpl {
         (id, title, timestamp.format(DateTimeFormatter.ISO_DATE_TIME), points, author)
       }
     )
+
+  def getContentStmt(memeId: Long, num: Long): Fragment = {
+    fr"""select meme_id,content_type,content,num from content where meme_id = $memeId and num = $num;"""
+  }
 
   def getCommentStmt(id: Long): Fragment = {
     fr"""select id, meme_id, comment, points, added_at, author from comments where id = $id;"""

@@ -9,6 +9,11 @@ import services.persistence.PostsPersistence.FeedOffset
 class MemeServiceImpl @Inject()(
                                  postsPersistence: PostsPersistence
                                ) extends MemeService with ResultExt {
+
+  override def getContent(memeId: Long, num: Long): Result[Content] = {
+    postsPersistence.getContent(memeId, num).toRes("Image not found.")
+  }
+
   override def createMeme(feedItem: MemeItem): Result[MemeItemWithId] = {
     postsPersistence.createPost(feedItem).succ
   }
