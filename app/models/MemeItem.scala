@@ -9,7 +9,7 @@ import io.circe.generic.semiauto._
 
 case class MemeItem(
                      title: String
-                     , timestamp: String
+                     , timestamp: LocalDateTime
                      , content: List[Content]
                      , points: Long
                      , author: Long
@@ -18,7 +18,7 @@ case class MemeItem(
 case class MemeItemWithId(
                            id: Long
                            , title: String
-                           , timestamp: String
+                           , timestamp: LocalDateTime
                            , content: List[Content]
                            , points: Long
                            , author: Long
@@ -27,7 +27,7 @@ case class MemeItemWithId(
 case class MemeItemWithoutContent(
                            id: Long
                            , title: String
-                           , timestamp: String
+                           , timestamp: LocalDateTime
                            , points: Long
                            , author: Long
                          )
@@ -47,6 +47,7 @@ object ContentTypes{
 }
 
 object MemeItem {
+
   final def decodeLocalDateTime(formatter: DateTimeFormatter): Decoder[LocalDateTime] =
     Decoder.instance { c =>
       c.as[String] match {

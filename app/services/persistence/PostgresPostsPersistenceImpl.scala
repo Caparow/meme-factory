@@ -1,6 +1,8 @@
 package services.persistence
 
-import cats.data.NonEmptyList
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+
 import cats.effect.IO
 import com.google.inject.{Inject, Singleton}
 import doobie._
@@ -15,7 +17,7 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
   override def createComment(commentItem: CommentItem): IO[CommentItemWithId] = {
     val commentQuery = for {
       _ <- createCommentStmt(commentItem).update.run
-      id <- sql"select lastval()".query[Long].unique
+      id <- fr"select lastval()".query[Long].unique
       comment <- getCommentStmt(id).query[CommentItemWithId].unique
     } yield comment
 
@@ -25,10 +27,15 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
   override def createPost(memeItem: MemeItem): IO[MemeItemWithId] = {
     val postQuery = for {
       _ <- createPostStmt(memeItem).update.run
-      id <- sql"select lastval()".query[Long].unique
-      post <- getPostStmt(id).query[MemeItemWithoutContent].unique
-//      _ <- createContentStmt(memeItem.content).update.run
-    } yield MemeItemWithId(id, memeItem.title, memeItem.timestamp, memeItem.content, memeItem.points, memeItem.author)
+      id <- fr"select lastval()".query[Long].unique
+      _ <- getPostStmt(id).query[MemeItemWithoutContent].unique
+      newContent = memeItem.content.map(_.copy(memeID = id))
+      _ <- {
+        if (newContent.nonEmpty)
+          createContentStmt(newContent).update.run
+        else fr"select 1".query[Long].unique
+      }
+    } yield MemeItemWithId(id, memeItem.title, memeItem.timestamp, newContent, memeItem.points, memeItem.author)
 
     connector.query(postQuery)
   }
@@ -107,91 +114,118 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
 }
 
 object PostgresPostsPersistenceImpl {
+
+  implicit val commentWithIdToComposite: Composite[CommentItemWithId] =
+    Composite[(Long, Long, String, String, Long, Long)].imap(
+      (t: (Long, Long, String, String, Long, Long)) =>
+        CommentItemWithId(t._1, t._2, t._3, LocalDateTime.parse(t._4.replace(" ", "T"), DateTimeFormatter.ISO_DATE_TIME), t._5, t._6))(
+      (p: CommentItemWithId) => {
+        import p._
+        (id, memeId, comment, timestamp.format(DateTimeFormatter.ISO_DATE_TIME), points, author)
+      }
+    )
+
+  implicit val commentToComposite: Composite[CommentItem] =
+    Composite[(Long, String, String, Long, Long)].imap(
+      (t: (Long, String, String, Long, Long)) =>
+        CommentItem(t._1, t._2, LocalDateTime.parse(t._3.replace(" ", "T"), DateTimeFormatter.ISO_DATE_TIME), t._4, t._5))(
+      (p: CommentItem) => {
+        import p._
+        (memeId, comment, timestamp.format(DateTimeFormatter.ISO_DATE_TIME), points, author)
+      }
+    )
+
+  implicit val memeToComposite: Composite[MemeItemWithoutContent] =
+    Composite[(Long, String, String, Long, Long)].imap(
+      (t: (Long, String, String, Long, Long)) =>
+        MemeItemWithoutContent(t._1, t._2, LocalDateTime.parse(t._3.replace(" ", "T"), DateTimeFormatter.ISO_DATE_TIME), t._4, t._5))(
+      (p: MemeItemWithoutContent) => {
+        import p._
+        (id, title, timestamp.format(DateTimeFormatter.ISO_DATE_TIME), points, author)
+      }
+    )
+
   def getCommentStmt(id: Long): Fragment = {
-    sql"""select id, meme_id, comment, points, added_at, author from comments where id = $id;"""
+    fr"""select id, meme_id, comment, points, added_at, author from comments where id = $id;"""
   }
 
   def deleteCommentStmt(id: Long): Fragment = {
-    sql"""delete from comments where id = $id;"""
+    fr"""delete from comments where id = $id;"""
   }
 
   def getCommentsStmt(id: Long): Fragment = {
-    sql"""select id, meme_id, comment, points, added_at, author from comments where meme_d = $id;"""
+    fr"""select id, meme_id, comment, points, added_at, author from comments where meme_id = $id;"""
   }
 
   def createCommentStmt(commentItem: CommentItem): Fragment = {
     import commentItem._
-    sql"""
+    fr"""
          |insert into comments(meme_id, comment, points, added_at, author) values
-         |($memeId, $comment, $points, $timestamp, $author)
+         |($memeId, '$comment', $points, '${timestamp.format(DateTimeFormatter.ISO_DATE_TIME)}', $author)
          |returning id;
        """.stripMargin
   }
 
   def updateCommentStmt(commentItem: CommentItemWithId): Fragment = {
     import commentItem._
-    sql"""
+    Fragment.const(s"""
          |update comments set
-         |points = $points,
+         |points = $points
          |where id = ${commentItem.id};
-       """.stripMargin
+       """.stripMargin)
   }
 
   def createPostStmt(memeItem: MemeItem): Fragment = {
     import memeItem._
-    sql"""
+    Fragment.const(s"""
          |insert into memes(title, added_at, points, author) values
-         |($title, $timestamp, $points, $author);
-       """.stripMargin
+         |('$title', '${timestamp.format(DateTimeFormatter.ISO_DATE_TIME)}', $points, $author);
+       """.stripMargin)
   }
 
   def getPostStmt(id: Long): Fragment = {
-    sql"""select id, title, added_at, points, author from memes where id = $id;"""
+    fr"""select id, title, added_at, points, author from memes where id = $id;"""
   }
 
   def getHottestPostsStmt(forDays: Int, offset: FeedOffset): Fragment = {
-//    todo: add timestamp
-//    where now() - added_at < '1 day'::interval
-    sql"""select id, title, added_at, points, author from memes
+    Fragment.const(s"""select id, title, added_at, points, author from memes
+         |where now() - added_at < '$forDays days'::interval
          |order by points
-         |limit ${offset.limit} offset ${offset.offset};""".stripMargin
+         |limit ${offset.limit} offset ${offset.offset};""".stripMargin)
   }
 
   def getLatestPostsStmt(offset: FeedOffset): Fragment = {
-    sql"""select id, title, added_at, points, author from memes
+    fr"""select id, title, added_at, points, author from memes
          |order by added_at
          |limit ${offset.limit} offset ${offset.offset};""".stripMargin
   }
 
   def deletePostStmt(id: Long): Fragment = {
-    sql"""delete from memes where id = $id;"""
+    fr"""delete from memes where id = $id;"""
   }
 
   def updatePostStmt(memeItem: MemeItemWithoutContent): Fragment = {
     import memeItem._
-    sql"""
+    Fragment.const(s"""
          |update memes set
-         |title = $title,
-         |points = $points,
+         |title = '$title',
+         |points = $points
          |where id = ${memeItem.id};
-       """.stripMargin
+       """.stripMargin)
   }
 
   def createContentStmt(contentList: List[Content]): Fragment = {
     def instantiate(content: Content): String = {
-      s"(${content.memeID}, ${content.contentType}, ${content.content}, ${content.num})"
+      s"(${content.memeID}, '${content.contentType}', '${content.content}', ${content.num})"
     }
 
-    val v = contentList.map(instantiate).mkString(",\n")
-    sql"""
-         |insert into content(meme_id,content_type,content,number) values
-         |$v
-         |;
-       """.stripMargin
+    val v = contentList.map(instantiate).mkString(",") ++ ";"
+    fr"""insert into content(meme_id,content_type,content,num) values""" ++
+    Fragment.const(v)
   }
 
   def getContentStmt(id: Long): Fragment = {
-    sql"""
+    fr"""
          |select meme_id,content_type,content,num
          |from content
          |where meme_id = $id

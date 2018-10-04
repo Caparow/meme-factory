@@ -91,7 +91,7 @@ class UserController @Inject()(
     Ok(views.html.signup())
   }
 
-  def update(userWithId: UserWithId) = Action {
+  def update = Action {
     //TODO: provide here update html
     Ok(views.html.index("Your new application is ready."))
   }

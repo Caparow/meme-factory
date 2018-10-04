@@ -11,6 +11,7 @@ case class PostgresCfg @Inject()(jdbcDriver : String, url : String, user : Strin
     config.setUsername(user)
     config.setPassword(password)
     config.setDriverClassName(jdbcDriver)
+    config.setMaximumPoolSize(15)
     config
   }
 }
