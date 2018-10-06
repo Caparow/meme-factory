@@ -1,7 +1,27 @@
 @()
 
-<!DOCTYPE html>
 
+@*<div id="fileContent">*@
+    @*<label for="imageField">Attach video or image</label>*@
+    @*<div class="input-group mb-2">*@
+        @*<div class="custom-file">*@
+            @*<input type="file" accept="image/*,video/*" class="custom-file-input" id="imageField" aria-describedby="fileHelp">*@
+            @*<label class="custom-file-label" for="imageField">Choose file</label>*@
+        @*</div>*@
+    @*</div>*@
+@*</div>*@
+
+@*<div id="textContent">*@
+    @*<label for="textField">Input Your Text</label>*@
+    @*<textarea class="form-control" id="textField" rows="3"></textarea>*@
+@*</div>*@
+
+@*<div id="htmlContent">*@
+    @*<label for="htmlField">Input Your Text</label>*@
+    @*<textarea class="form-control" id="htmlField" rows="3"></textarea>*@
+@*</div>*@
+
+<!DOCTYPE html>
 
 <html>
     <head>
@@ -28,6 +48,7 @@
 
         </nav>
 
+
         <div class="container-fluid">
             <div class="row row-offcanvas row-offcanvas-left">
                 <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
@@ -36,13 +57,14 @@
                         <a class="nav-link" data-toggle="pill" href="@routes.UserController.register()" aria-selected="false">Register</a>
                     </div>
                 </div>
-                <div class="col-xs-12 col-sm-10"> <div class="container">
-                    <h2 class="form-signin-heading">Create Post:</h2>
-                    <form class="form-signup" action="/newPostForm" method="post" role="form" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="titleField" class="sr-only">Title</label>
-                            <input type="text" id="titleField" name="titleField" class="form-control" placeholder="Title" required autofocus>
-                        </div>
+                <div class="col-xs-12 col-sm-10">
+                    <div class="container">
+                        <h2 class="form-signin-heading">Create Post:</h2>
+                        <form class="form-signup" action="/newPostForm" method="post" role="form" enctype="multipart/form-data">
+                            <div class="form-group">
+                                <label for="titleField" class="sr-only">Title</label>
+                                <input type="text" id="titleField" name="titleField" class="form-control" placeholder="Title" required autofocus>
+                            </div>
 
                         <div class="form-group">
                             <label for="imageField">Attach video or image</label>

@@ -5,28 +5,60 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <title>SignUp</title>
+        <title>Meme Factory</title>
     </head>
     <body>
-        <div class="container">
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Meme Factory</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-            <a href="/user/login" class="btn btn-info" value="Log In" style="float: right;">Log In</a>
-
-            <form class="form-signup" action="/user/registerForm" method="post" role="form">
-                <h2 class="form-signin-heading">Please sign up</h2>
-                <label for="loginField" class="sr-only">Email address</label>
-                <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" required autofocus>
-                <label for="passwdField" class="sr-only">Password</label>
-                <input type="password" id="passwdField" name="passwdField" class="form-control" placeholder="Password" required>
-                <label for="firstNameField" class="sr-only">First Name</label>
-                <input type="text" id="firstNameField" name="firstNameField" class="form-control" placeholder="First Name">
-
-                <label for="surnameField" class="sr-only">Surname</label>
-                <input type="text" id="surnameField" name="surnameField" class="form-control" placeholder="Surname">
-
-                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign Up">
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@routes.FeedController.latest()">Latest</a></li>
+                </ul>
+            </div>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
             </form>
 
-        </div> <!-- /container -->
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row row-offcanvas row-offcanvas-left">
+                <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
+                    <div class="nav flex-column nav-pills" aria-orientation="vertical">
+                        <a class="nav-link" data-toggle="pill" href="@routes.UserController.login()" aria-selected="false">
+                            Login</a>
+                        <a class="nav-link" data-toggle="pill" href="@routes.UserController.register()" aria-selected="false">
+                            Register</a>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-sm-10">
+                    <div class="container">
+
+                        <a href="/user/login" class="btn btn-info" value="Log In" style="float: right;">Log In</a>
+
+                        <form class="form-signup" action="/user/registerForm" method="post" role="form">
+                            <h2 class="form-signin-heading">Please sign up</h2>
+                            <label for="loginField" class="sr-only">Email address</label>
+                            <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" required autofocus>
+                            <label for="passwdField" class="sr-only">Password</label>
+                            <input type="password" id="passwdField" name="passwdField" class="form-control" placeholder="Password" required>
+                            <label for="firstNameField" class="sr-only">First Name</label>
+                            <input type="text" id="firstNameField" name="firstNameField" class="form-control" placeholder="First Name">
+
+                            <label for="surnameField" class="sr-only">Surname</label>
+                            <input type="text" id="surnameField" name="surnameField" class="form-control" placeholder="Surname">
+
+                            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign Up">
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
