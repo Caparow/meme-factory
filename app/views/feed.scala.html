@@ -5,45 +5,61 @@
 <html>
     <head>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
-        <title>Login</title>
+        <title>Meme Factory</title>
     </head>
     <body>
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-12">
-                    <a href="/newPost" class="btn btn-info" value="New Post" style="float: right;">New Post</a>
-                </div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Meme Factory</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@routes.FeedController.latest()">Latest</a></li>
+                    <li class="nav-item"><a class="nav-link" href="@routes.FeedController.createPost()">New Post</a></li>
+                </ul>
             </div>
-            @for(meme <- memeList) {
-                <div class="row">
-                    <div class="col-sm-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <h5 class="card-header">@{
-                                    meme.title
-                                }</h5>
-                                @for(c <- meme.content.sortWith(_.num < _.num)) {
-                                    @c.contentType match {
-                                        case "TEXT" => {
-                                            <p class="card-text"> @{
-                                                c.content
-                                            } </p>
-                                        }
-                                        case "HTML" => {
-                                            @{
-                                                c.content
-                                            }
-                                        }
-                                        case _ => {
-                                            <img class="card-img" src="@routes.FeedController.image(c.memeID, c.num)" />
-                                        }
-                                    }
-                                }
-                            </div>
-                        </div>
+            <form class="form-inline">
+                <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+            </form>
+
+        </nav>
+
+        <div class="container-fluid">
+            <div class="row row-offcanvas row-offcanvas-left">
+                <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
+                    <div class="nav flex-column nav-pills" aria-orientation="vertical">
+                        <a class="nav-link" data-toggle="pill" href="@routes.UserController.login()" aria-selected="false">Login</a>
+                        <a class="nav-link" data-toggle="pill" href="@routes.UserController.register()" aria-selected="false">Register</a>
                     </div>
                 </div>
-            }
+                <div class="col-xs-12 col-sm-10">
+                @for(meme <- memeList) {
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-header">@{ meme.title }</h5>
+                            @for(c <- meme.content.sortWith(_.num < _.num)) {
+                                @c.contentType match {
+                                    case "TEXT" => { <p class="card-text"> @{ c.content } </p> }
+                                    case "HTML" => { @{ c.content } }
+                                    case tt if ContentTypes.isImage(tt) => { <img class="card-img" src="@routes.FeedController.resource(c.memeID, c.num)" /> }
+                                    case tt if ContentTypes.isVideo(tt) => {
+                                        <div class="embed-responsive embed-responsive-16by9">
+                                            <video controls  class="embed-responsive-item">
+                                                <source src="@routes.FeedController.resource(c.memeID, c.num)" type="video/mp4">
+                                            </video>
+                                        </div>
+                                    }
+                                }
+                            }
+                        </div>
+                    </div>
+                }
+                </div>
+            </div>
         </div>
     </body>
 </html>

@@ -45,6 +45,16 @@ object ContentTypes{
   val TEXT = "TEXT"
   val IMAGE_PNG = ".png"
   val IMAGE_JPG = ".jpg"
+  val IMAGE_GIF = ".gif"
+  val VIDEO_MP4 = ".mp4"
+
+  def isImage(t: String) : Boolean = {
+    t == IMAGE_GIF || t == IMAGE_PNG || t == IMAGE_GIF
+  }
+
+  def isVideo(t: String) : Boolean = {
+    t == VIDEO_MP4
+  }
 }
 
 object MemeItem {

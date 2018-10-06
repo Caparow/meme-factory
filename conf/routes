@@ -11,7 +11,7 @@ GET         /error                    controllers.Application.error(cause : Stri
 GET         /hottest                  controllers.FeedController.hottest()
 GET         /latest                   controllers.FeedController.latest()
 GET         /post                     controllers.FeedController.post(id : Long)
-GET         /image                    controllers.FeedController.image(memeId : Long, num : Long)
+GET         /image                    controllers.FeedController.resource(memeId : Long, num : Long)
 
 GET         /newPost                  controllers.FeedController.createPost
 POST        /newPostForm              controllers.FeedController.createPostForm

@@ -43,26 +43,30 @@ class FeedController @Inject()(
   private def authAction = actionBuilders.RestrictAction(UserRole.name).defaultHandler()
 
   def hottest(forDays: Int = 1, feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async {
-    import MemeItem._
     memeService.getMostPopular(forDays, feedOffset).convert { memes =>
       Ok(views.html.feed(memes))
     }.unsafeToFuture()
   }
 
   def latest(feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async {
-    import MemeItem._
     memeService.getLatest(feedOffset).convert { memes =>
-      Ok(views.html.index(memes.asJson.spaces2))
+      Ok(views.html.feed(memes))
     }.unsafeToFuture()
   }
 
-  def image(memeId: Long, num: Long) = Action.async {
+  def resource(memeId: Long, num: Long) = Action.async {
     memeService.getContent(memeId, num).convert { content =>
       val bytes = Base64.getDecoder.decode(content.content)
-      val tempFile = File.createTempFile("image", content.contentType)
+      val tempFile = File.createTempFile("resource", content.contentType)
       val path = Paths.get(tempFile.getAbsolutePath)
       Files.write(path, bytes)
-      Ok.sendFile(tempFile)
+      content.contentType match {
+        case tt if ContentTypes.isImage(tt) => Ok.sendFile(tempFile)
+        case tt if ContentTypes.isVideo(tt) =>
+          val io = FileIO.fromPath(path)
+          Ok.chunked(io)
+        case _ => Ok(content.content)
+      }
     }.unsafeToFuture()
   }
 
