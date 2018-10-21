@@ -7,7 +7,9 @@ import services.persistence.PostsPersistence.FeedOffset
 import scala.collection.mutable
 import scala.util.Random
 
-class DummyPostsPersistenceImpl extends PostsPersistence {
+class DummyPostsPersistenceImpl(
+                                 usersPersistence: UsersPersistence
+                               ) extends PostsPersistence {
   val memes: mutable.HashMap[Long, MemeItem] = mutable.HashMap.empty[Long, MemeItem]
   val comments: mutable.HashMap[Long, CommentItem] = mutable.HashMap.empty[Long, CommentItem]
 
@@ -15,7 +17,8 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
     val id = Random.nextInt()
     memes.put(id, feedItem)
     import feedItem._
-    IO.pure(MemeItemWithId(id, title, timestamp, content, points, author))
+    IO.pure(MemeItemWithId(id, title, timestamp, content, points, author,
+      usersPersistence.get(author).unsafeRunSync().map(_.login).getOrElse("")))
   }
 
   override def deletePost(id: Long): IO[Unit] = synchronized {
@@ -45,7 +48,8 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
     val id = Random.nextInt()
     comments.put(id, commentItem)
     import commentItem._
-    IO.pure(CommentItemWithId(id, memeId, comment, timestamp, points, author))
+    IO.pure(CommentItemWithId(id, memeId, comment, timestamp, points, author,
+      usersPersistence.get(author).unsafeRunSync().map(_.login).getOrElse("")))
   }
 
 
@@ -73,10 +77,10 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
 
 
   override def getMostPopular(forDays: Int, offset: FeedOffset): IO[List[MemeItemWithId]] = synchronized {
-    IO.pure{
-      memes.map{case (k, v) =>
+    IO.pure {
+      memes.map { case (k, v) =>
         import v._
-        MemeItemWithId(k, title, timestamp, content, points, author)
+        MemeItemWithId(k, title, timestamp, content, points, author, usersPersistence.get(author).unsafeRunSync().map(_.login).getOrElse(""))
       }.toList
 
     }
@@ -84,29 +88,29 @@ class DummyPostsPersistenceImpl extends PostsPersistence {
 
 
   override def getLatest(offset: FeedOffset): IO[List[MemeItemWithId]] = synchronized {
-    IO.pure{
-      memes.map{case (k, v) =>
+    IO.pure {
+      memes.map { case (k, v) =>
         import v._
-        MemeItemWithId(k, title, timestamp, content, points, author)
+        MemeItemWithId(k, title, timestamp, content, points, author, usersPersistence.get(author).unsafeRunSync().map(_.login).getOrElse(""))
       }.toList
     }
   }
 
 
   override def getPostWithComments(id: Long): IO[MemeItemWithComments] = synchronized {
-    IO.pure{
-      val c = comments.filter(i => i._2.memeId == id).map{ case (k,v) =>
+    IO.pure {
+      val c = comments.filter(i => i._2.memeId == id).map { case (k, v) =>
         import v._
-        CommentItemWithId(k, memeId, comment, timestamp, points, author)
+        CommentItemWithId(k, memeId, comment, timestamp, points, author, usersPersistence.get(author).unsafeRunSync().map(_.login).getOrElse(""))
       }.toList
       val m = memes(id)
       import m._
-      MemeItemWithComments(MemeItemWithId(id, title, timestamp, content, points, author), c)
+      MemeItemWithComments(MemeItemWithId(id, title, timestamp, content, points, author, usersPersistence.get(author).unsafeRunSync().map(_.login).getOrElse("")), c)
     }
   }
 
   override def getContent(memeId: Long, num: Long): IO[Option[Content]] = synchronized {
-    IO.pure{
+    IO.pure {
       val m = memes(memeId)
       import m._
       content.find(_.num == num)

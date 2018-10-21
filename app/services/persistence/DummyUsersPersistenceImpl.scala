@@ -26,6 +26,13 @@ class DummyUsersPersistenceImpl extends UsersPersistence {
     IO.pure(user)
   }
 
+  override def get(id: Long): IO[Option[UserWithId]] = synchronized {
+    IO.pure(content.get(id).map { v =>
+      import v._
+      UserWithId(id, v.login, pass, name, surname, avatar)
+    })
+  }
+
   override def get(login: String, password: String): IO[Option[UserWithId]] = synchronized {
     IO.pure(content.find{ u => u._2.login == login && u._2.pass == password}.map{ case (k,v) =>
       import v._

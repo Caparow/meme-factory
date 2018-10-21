@@ -28,6 +28,10 @@ class PostgresUsersPersistenceImpl @Inject()(connector: PostgresConnector) exten
     connector.query(getUserByLogAndPassStmt(login, password).query[UserWithId].option)
   }
 
+  override def get(id: Long): IO[Option[UserWithId]] = {
+    connector.query(getUserStmt(id).query[UserWithId].option)
+  }
+
   override def update(user: UserWithId): IO[UserWithId] = {
     val userQ = for {
       _ <- updateUserStmt(user).update.run

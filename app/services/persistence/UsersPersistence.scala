@@ -12,4 +12,6 @@ trait UsersPersistence {
   def update(user: UserWithId): IO[UserWithId]
 
   def get(login: String, password: String): IO[Option[UserWithId]]
+
+  def get(id: Long): IO[Option[UserWithId]]
 }

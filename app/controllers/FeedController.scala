@@ -1,27 +1,23 @@
 package controllers
 
-import java.io.{ByteArrayInputStream, File}
+import java.io.File
 import java.nio.file.{Files, Paths}
-import java.sql.Blob
 import java.time.{ZoneId, ZonedDateTime}
 import java.util.Base64
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.{FileIO, Source}
-import akka.util.ByteString
-import be.objectify.deadbolt.scala.{ActionBuilders, AuthenticatedRequest}
+import akka.stream.scaladsl.FileIO
+import be.objectify.deadbolt.scala.ActionBuilders
 import com.google.inject.{Inject, Singleton}
 import configs.DeadboltConfig
-import models.auth.{Role, UserRole}
+import io.circe.syntax._
 import models._
+import models.auth.UserRole
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AbstractController, ControllerComponents, MultipartFormData}
+import play.api.mvc.{AbstractController, ControllerComponents}
 import services.MemeService
 import services.persistence.PostsPersistence.FeedOffset
-import io.circe.syntax._
-import javax.imageio.ImageIO
-import play.api.mvc.MultipartFormData.DataPart
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
@@ -41,6 +37,12 @@ class FeedController @Inject()(
   implicit val materializer = ActorMaterializer()
 
   private def authAction = actionBuilders.RestrictAction(UserRole.name).defaultHandler()
+
+  def post(id: Long) = Action.async {
+    memeService.getPostWithComments(id).convert { post =>
+      Ok(views.html.post(post))
+    }.unsafeToFuture()
+  }
 
   def hottest(forDays: Int = 1, feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async {
     memeService.getMostPopular(forDays, feedOffset).convert { memes =>
@@ -67,13 +69,6 @@ class FeedController @Inject()(
           Ok.chunked(io)
         case _ => Ok(content.content)
       }
-    }.unsafeToFuture()
-  }
-
-  def post(id: Long) = authAction {
-    import MemeItem._
-    memeService.getPostWithComments(id).convert { meme =>
-      Ok(views.html.index(meme.asJson.spaces2))
     }.unsafeToFuture()
   }
 
@@ -105,12 +100,21 @@ class FeedController @Inject()(
     }.unsafeToFuture()
   }
 
-  def createCommentForm(commentItem: CommentItem) = authAction {
-    Future(Ok(views.html.index("Your new application is ready.")))
-  }
-
-  def createComment(commentItem: CommentItem) = authAction {
-    Future(Ok(views.html.index("Your new application is ready.")))
+  def newCommentForm(id: Long) = authAction { implicit request =>
+    val uId = request.session.get(deadboltConfig.identifierKey).getOrElse("")
+    request.body.asFormUrlEncoded.map(_.map { case (k, vs) => k -> vs.head }).map { formData =>
+      memeService.createComment(
+        CommentItem(
+          id,
+          formData("textField"),
+          ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime,
+          0,
+          uId.toLong
+        )
+      ).convert { v =>
+        Redirect(routes.FeedController.post(id))
+      }.unsafeToFuture()
+    }.get
   }
 
   def createPostForm = authAction(parse.multipartFormData) { implicit request =>

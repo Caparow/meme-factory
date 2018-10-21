@@ -21,6 +21,7 @@ case class CommentItemWithId(
                               , timestamp: LocalDateTime
                               , points: Long
                               , author: Long
+                              , login: String
                             )
 
 object CommentItem {

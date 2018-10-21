@@ -35,7 +35,7 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
           createContentStmt(newContent).update.run
         else fr"select 1".query[Long].unique
       }
-    } yield MemeItemWithId(id, memeItem.title, memeItem.timestamp, newContent, memeItem.points, memeItem.author)
+    } yield MemeItemWithId(id, memeItem.title, memeItem.timestamp, newContent, memeItem.points, memeItem.author, "")
 
     connector.query(postQuery)
   }
@@ -92,7 +92,7 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
     f.flatMap { mm =>
       mm.map { meme =>
         connector.query(getContentStmt(meme.id).query[Content].to[List])
-          .map(c => MemeItemWithId(meme.id, meme.title, meme.timestamp, c, meme.points, meme.author))
+          .map(c => MemeItemWithId(meme.id, meme.title, meme.timestamp, c, meme.points, meme.author, meme.login))
       }.foldLeft(IO.pure(List.empty[MemeItemWithId])) {
         case (acc, v) => acc.flatMap(ii => v.map(List(_) ++ ii))
       }
@@ -120,12 +120,12 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
 object PostgresPostsPersistenceImpl {
 
   implicit val commentWithIdToComposite: Composite[CommentItemWithId] =
-    Composite[(Long, Long, String, String, Long, Long)].imap(
-      (t: (Long, Long, String, String, Long, Long)) =>
-        CommentItemWithId(t._1, t._2, t._3, LocalDateTime.parse(t._4.replace(" ", "T"), DateTimeFormatter.ISO_DATE_TIME), t._5, t._6))(
+    Composite[(Long, Long, String, String, Long, Long, String)].imap(
+      (t: (Long, Long, String, String, Long, Long, String)) =>
+        CommentItemWithId(t._1, t._2, t._3, LocalDateTime.parse(t._4.replace(" ", "T"), DateTimeFormatter.ISO_DATE_TIME), t._5, t._6, t._7))(
       (p: CommentItemWithId) => {
         import p._
-        (id, memeId, comment, timestamp.format(DateTimeFormatter.ISO_DATE_TIME), points, author)
+        (id, memeId, comment, timestamp.format(DateTimeFormatter.ISO_DATE_TIME), points, author, login)
       }
     )
 
@@ -140,12 +140,12 @@ object PostgresPostsPersistenceImpl {
     )
 
   implicit val memeToComposite: Composite[MemeItemWithoutContent] =
-    Composite[(Long, String, String, Long, Long)].imap(
-      (t: (Long, String, String, Long, Long)) =>
-        MemeItemWithoutContent(t._1, t._2, LocalDateTime.parse(t._3.replace(" ", "T"), DateTimeFormatter.ISO_DATE_TIME), t._4, t._5))(
+    Composite[(Long, String, String, Long, Long, String)].imap(
+      (t: (Long, String, String, Long, Long, String)) =>
+        MemeItemWithoutContent(t._1, t._2, LocalDateTime.parse(t._3.replace(" ", "T"), DateTimeFormatter.ISO_DATE_TIME), t._4, t._5, t._6))(
       (p: MemeItemWithoutContent) => {
         import p._
-        (id, title, timestamp.format(DateTimeFormatter.ISO_DATE_TIME), points, author)
+        (id, title, timestamp.format(DateTimeFormatter.ISO_DATE_TIME), points, author, login)
       }
     )
 
@@ -154,7 +154,10 @@ object PostgresPostsPersistenceImpl {
   }
 
   def getCommentStmt(id: Long): Fragment = {
-    fr"""select id, meme_id, comment, points, added_at, author from comments where id = $id;"""
+    fr"""select comments.id, meme_id, comment, added_at, points, author, users.login
+        |from comments
+        |join users on comments.author = users.id
+        |where comments.id = $id;""".stripMargin
   }
 
   def deleteCommentStmt(id: Long): Fragment = {
@@ -162,21 +165,25 @@ object PostgresPostsPersistenceImpl {
   }
 
   def getCommentsStmt(id: Long): Fragment = {
-    fr"""select id, meme_id, comment, points, added_at, author from comments where meme_id = $id;"""
+    fr"""select comments.id, meme_id, comment, added_at, points, author, users.login
+        |from comments
+        |join users on comments.author = users.id
+        |where meme_id = $id;""".stripMargin
   }
 
   def createCommentStmt(commentItem: CommentItem): Fragment = {
     import commentItem._
-    fr"""
-         |insert into comments(meme_id, comment, points, added_at, author) values
-         |($memeId, '$comment', $points, '${timestamp.format(DateTimeFormatter.ISO_DATE_TIME)}', $author)
-         |returning id;
-       """.stripMargin
+    Fragment.const(
+      s"""
+         |insert into comments(meme_id, comment, added_at, points, author) values
+         |($memeId, '$comment', '${timestamp.format(DateTimeFormatter.ISO_DATE_TIME)}', $points, $author);
+       """.stripMargin)
   }
 
   def updateCommentStmt(commentItem: CommentItemWithId): Fragment = {
     import commentItem._
-    Fragment.const(s"""
+    Fragment.const(
+      s"""
          |update comments set
          |points = $points
          |where id = ${commentItem.id};
@@ -185,27 +192,36 @@ object PostgresPostsPersistenceImpl {
 
   def createPostStmt(memeItem: MemeItem): Fragment = {
     import memeItem._
-    Fragment.const(s"""
+    Fragment.const(
+      s"""
          |insert into memes(title, added_at, points, author) values
          |('$title', '${timestamp.format(DateTimeFormatter.ISO_DATE_TIME)}', $points, $author);
        """.stripMargin)
   }
 
   def getPostStmt(id: Long): Fragment = {
-    fr"""select id, title, added_at, points, author from memes where id = $id;"""
+    fr"""select memes.id, title, added_at, points, author, users.login
+        |from memes
+        |join users on memes.author = users.id
+        |where memes.id = $id;""".stripMargin
   }
 
   def getHottestPostsStmt(forDays: Int, offset: FeedOffset): Fragment = {
-    Fragment.const(s"""select id, title, added_at, points, author from memes
+    Fragment.const(
+      s"""select memes.id, title, added_at, points, author, users.login
+         |from memes
+         |join users on memes.author = users.id
          |where now() - added_at < '$forDays days'::interval
          |order by points
          |limit ${offset.limit} offset ${offset.offset};""".stripMargin)
   }
 
   def getLatestPostsStmt(offset: FeedOffset): Fragment = {
-    fr"""select id, title, added_at, points, author from memes
-         |order by added_at
-         |limit ${offset.limit} offset ${offset.offset};""".stripMargin
+    fr"""select memes.id, title, added_at, points, author, users.login
+        |from memes
+        |join users on memes.author = users.id
+        |order by added_at
+        |limit ${offset.limit} offset ${offset.offset};""".stripMargin
   }
 
   def deletePostStmt(id: Long): Fragment = {
@@ -214,7 +230,8 @@ object PostgresPostsPersistenceImpl {
 
   def updatePostStmt(memeItem: MemeItemWithoutContent): Fragment = {
     import memeItem._
-    Fragment.const(s"""
+    Fragment.const(
+      s"""
          |update memes set
          |title = '$title',
          |points = $points
@@ -229,15 +246,15 @@ object PostgresPostsPersistenceImpl {
 
     val v = contentList.map(instantiate).mkString(",") ++ ";"
     fr"""insert into content(meme_id,content_type,content,num) values""" ++
-    Fragment.const(v)
+      Fragment.const(v)
   }
 
   def getContentStmt(id: Long): Fragment = {
     fr"""
-         |select meme_id,content_type,content,num
-         |from content
-         |where meme_id = $id
-         |;
+        |select meme_id,content_type,content,num
+        |from content
+        |where meme_id = $id
+        |;
        """.stripMargin
   }
 }

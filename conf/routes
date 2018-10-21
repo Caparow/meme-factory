@@ -10,8 +10,10 @@ GET         /error                    controllers.Application.error(cause : Stri
 
 GET         /hottest                  controllers.FeedController.hottest()
 GET         /latest                   controllers.FeedController.latest()
-GET         /post                     controllers.FeedController.post(id : Long)
 GET         /image                    controllers.FeedController.resource(memeId : Long, num : Long)
+
+GET         /post                     controllers.FeedController.post(id : Long)
+POST        /newCommentForm           controllers.FeedController.newCommentForm(id : Long)
 
 GET         /newPost                  controllers.FeedController.createPost
 POST        /newPostForm              controllers.FeedController.createPostForm

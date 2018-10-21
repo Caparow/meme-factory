@@ -12,6 +12,8 @@ case class PostgresCfg @Inject()(jdbcDriver : String, url : String, user : Strin
     config.setPassword(password)
     config.setDriverClassName(jdbcDriver)
     config.setMaximumPoolSize(15)
+    config.setAutoCommit(true)
+    config.setIdleTimeout(300)
     config
   }
 }

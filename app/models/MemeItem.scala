@@ -22,15 +22,17 @@ case class MemeItemWithId(
                            , content: List[Content]
                            , points: Long
                            , author: Long
+                           , login: String
                          )
 
 case class MemeItemWithoutContent(
-                           id: Long
-                           , title: String
-                           , timestamp: LocalDateTime
-                           , points: Long
-                           , author: Long
-                         )
+                                   id: Long
+                                   , title: String
+                                   , timestamp: LocalDateTime
+                                   , points: Long
+                                   , author: Long
+                                   , login: String
+                                 )
 
 case class MemeItemWithComments(
                                  memeItem: MemeItemWithId
@@ -40,7 +42,7 @@ case class MemeItemWithComments(
 
 case class Content(memeID: Long, contentType: String, content: String, num: Long)
 
-object ContentTypes{
+object ContentTypes {
   val HTML = "HTML"
   val TEXT = "TEXT"
   val IMAGE_PNG = ".png"
@@ -48,11 +50,11 @@ object ContentTypes{
   val IMAGE_GIF = ".gif"
   val VIDEO_MP4 = ".mp4"
 
-  def isImage(t: String) : Boolean = {
+  def isImage(t: String): Boolean = {
     t == IMAGE_JPG || t == IMAGE_PNG || t == IMAGE_GIF
   }
 
-  def isVideo(t: String) : Boolean = {
+  def isVideo(t: String): Boolean = {
     t == VIDEO_MP4
   }
 }
@@ -65,13 +67,12 @@ object MemeItem {
         case Right(s) => try Right(LocalDateTime.parse(s, formatter)) catch {
           case _: DateTimeParseException => Left(DecodingFailure("LocalDateTime", c.history))
         }
-        case l @ Left(_) => l.asInstanceOf[Decoder.Result[LocalDateTime]]
+        case l@Left(_) => l.asInstanceOf[Decoder.Result[LocalDateTime]]
       }
     }
 
   final def encodeLocalDateTime(formatter: DateTimeFormatter): Encoder[LocalDateTime] =
     Encoder.instance(time => Json.fromString(time.format(formatter)))
-
 
 
   implicit final val decodeLocalDateTimeDefault: Decoder[LocalDateTime] = decodeLocalDateTime(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
