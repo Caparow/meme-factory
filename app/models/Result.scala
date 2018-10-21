@@ -10,7 +10,7 @@ trait Result {
 
 
 
-trait ResultExt extends Result{
+trait ResultExt extends Result {
   implicit class ResultExt[F](r: Result[F]) {
     def convert[T <: play.api.mvc.Result](f: F => T): IO[play.api.mvc.Result] = {
       r.map{

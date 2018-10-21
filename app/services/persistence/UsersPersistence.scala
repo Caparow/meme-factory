@@ -14,4 +14,6 @@ trait UsersPersistence {
   def get(login: String, password: String): IO[Option[UserWithId]]
 
   def get(id: Long): IO[Option[UserWithId]]
+
+  def getAvatar(id: Long): IO[Option[(String, String)]]
 }

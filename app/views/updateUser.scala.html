@@ -1,26 +1,5 @@
 @(user: UserWithId)
 
-
-@*<div id="fileContent">*@
-    @*<label for="imageField">Attach video or image</label>*@
-    @*<div class="input-group mb-2">*@
-        @*<div class="custom-file">*@
-            @*<input type="file" accept="image/*,video/*" class="custom-file-input" id="imageField" aria-describedby="fileHelp">*@
-            @*<label class="custom-file-label" for="imageField">Choose file</label>*@
-        @*</div>*@
-    @*</div>*@
-@*</div>*@
-
-@*<div id="textContent">*@
-    @*<label for="textField">Input Your Text</label>*@
-    @*<textarea class="form-control" id="textField" rows="3"></textarea>*@
-@*</div>*@
-
-@*<div id="htmlContent">*@
-    @*<label for="htmlField">Input Your Text</label>*@
-    @*<textarea class="form-control" id="htmlField" rows="3"></textarea>*@
-@*</div>*@
-
 <!DOCTYPE html>
 
 <html>
@@ -48,7 +27,6 @@
 
         </nav>
 
-
         <div class="container-fluid">
             <div class="row row-offcanvas row-offcanvas-left">
                 <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
@@ -62,21 +40,26 @@
                 </div>
                 <div class="col-xs-12 col-sm-10">
                     <div class="container">
-                        <h2 class="form-signin-heading">Create Post:</h2>
-                        <form class="form-signup" action="/newPostForm" method="post" role="form" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="titleField" class="sr-only">Title</label>
-                                <input type="text" id="titleField" name="titleField" class="form-control" placeholder="Title" required autofocus>
-                            </div>
+                        <form class="form-signup" action="/user/updateForm" method="post" role="form" enctype="multipart/form-data">
+                            <h2 class="form-signin-heading">Please Update User Profile</h2>
+                            <label for="loginField" class="sr-only">Email address</label>
+                            <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" value="@{user.login}" required autofocus>
 
-                        <div class="form-group">
-                            <label for="imageField">Attach video or image</label>
-                            <input type="file" accept="image/*,video/*" name="imageField" class="form-control-file" id="imageField" aria-describedby="fileHelp">
-                        </div>
-                        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Create">
-                    </form>
+                            <label for="passwordField" class="sr-only">Password</label>
+                            <input type="password" id="passwordField" name="passwordField" class="form-control" placeholder="Password" value="@{user.pass}" required>
 
-                </div>
+                            <label for="firstNameField" class="sr-only">First Name</label>
+                            <input type="text" id="firstNameField" name="firstNameField" class="form-control" placeholder="First Name" value="@{user.name}">
+
+                            <label for="surnameField" class="sr-only">Surname</label>
+                            <input type="text" id="surnameField" name="surnameField" class="form-control" placeholder="Surname" value="@{user.surname}">
+
+                            <label for="avatar">Attach user profile image</label>
+                            <input type="file" accept="image/*" name="avatar" class="form-control-file" id="avatar" aria-describedby="fileHelp">
+
+                            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Update">
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>

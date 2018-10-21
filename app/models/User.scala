@@ -9,6 +9,7 @@ case class User(
                  , name: Option[String]
                  , surname: Option[String]
                  , avatar: Option[String]
+                 , avatarType: Option[String]
                )
 
 case class UserWithId(
@@ -18,6 +19,7 @@ case class UserWithId(
                        , name: Option[String]
                        , surname: Option[String]
                        , avatar: Option[String]
+                       , avatarType: Option[String]
                      )
 
 

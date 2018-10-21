@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS "public"."users" (
     "user_name" text,
     "surname" text,
     "avatar" text,
+    "avatar_type" text,
     PRIMARY KEY ("id")
 );
 CREATE TABLE IF NOT EXISTS "public"."comments" (

@@ -16,7 +16,7 @@ import models._
 import models.auth.UserRole
 import play.api.libs.ws.WSClient
 import play.api.mvc.{AbstractController, ControllerComponents}
-import services.MemeService
+import services.{MemeService, UserService}
 import services.persistence.PostsPersistence.FeedOffset
 
 import scala.concurrent.{ExecutionContext, Future}
@@ -25,6 +25,7 @@ import scala.util.Try
 @Singleton
 class FeedController @Inject()(
                                 memeService: MemeService
+                                , userService: UserService
                                 , actionBuilders: ActionBuilders
                                 , ws: WSClient
                                 , deadboltConfig: DeadboltConfig
@@ -38,21 +39,30 @@ class FeedController @Inject()(
 
   private def authAction = actionBuilders.RestrictAction(UserRole.name).defaultHandler()
 
-  def post(id: Long) = Action.async {
+  def post(id: Long) = Action.async { request =>
+    import deadboltConfig._
+    val uId: Option[UserWithId] = request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption)
+      .map(id => userService.getUser(id).unsafeRunSync().right.get)
     memeService.getPostWithComments(id).convert { post =>
-      Ok(views.html.post(post))
+      Ok(views.html.post(post, uId))
     }.unsafeToFuture()
   }
 
-  def hottest(forDays: Int = 1, feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async {
+  def hottest(forDays: Int = 1, feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async { implicit request =>
+    import deadboltConfig._
+    val uId: Option[UserWithId] = request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption)
+      .map(id => userService.getUser(id).unsafeRunSync().right.get)
     memeService.getMostPopular(forDays, feedOffset).convert { memes =>
-      Ok(views.html.feed(memes))
+      Ok(views.html.feed(memes, uId))
     }.unsafeToFuture()
   }
 
-  def latest(feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async {
+  def latest(feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async { request =>
+    import deadboltConfig._
+    val uId: Option[UserWithId] = request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption)
+      .map(id => userService.getUser(id).unsafeRunSync().right.get)
     memeService.getLatest(feedOffset).convert { memes =>
-      Ok(views.html.feed(memes))
+      Ok(views.html.feed(memes, uId))
     }.unsafeToFuture()
   }
 
@@ -101,7 +111,8 @@ class FeedController @Inject()(
   }
 
   def newCommentForm(id: Long) = authAction { implicit request =>
-    val uId = request.session.get(deadboltConfig.identifierKey).getOrElse("")
+    import deadboltConfig._
+    val uId = request.session.get(identifierKey).getOrElse("")
     request.body.asFormUrlEncoded.map(_.map { case (k, vs) => k -> vs.head }).map { formData =>
       memeService.createComment(
         CommentItem(
@@ -141,8 +152,11 @@ class FeedController @Inject()(
     res.getOrElse(Future(BadRequest("Form is invalid")))
   }
 
-  def createPost() = authAction {
-    Future(Ok(views.html.create_meme()))
+  def createPost() = authAction { request =>
+    import deadboltConfig._
+    val u: Option[UserWithId] = request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption)
+      .map(id => userService.getUser(id).unsafeRunSync().right.get)
+    Future(Ok(views.html.create_meme(u.get)))
   }
 
   def deleteComment(id: Long) = authAction {

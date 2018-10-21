@@ -1,4 +1,4 @@
-@(meme: MemeItemWithComments)
+@(meme: MemeItemWithComments, user: Option[UserWithId])
 
 <!DOCTYPE html>
 
@@ -31,10 +31,23 @@
         <div class="container-fluid">
             <div class="row row-offcanvas row-offcanvas-left">
                 <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
-                    <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                        <a class="nav-link" data-toggle="pill" href="@routes.UserController.login()" aria-selected="false">Login</a>
-                        <a class="nav-link" data-toggle="pill" href="@routes.UserController.register()" aria-selected="false">Register</a>
-                    </div>
+                @user match {
+                    case Some(u) => {
+                        <p>@{u.login}</p>
+                        <br>
+                        <img src="@routes.UserController.avatarResource()" width="128" height="128"/>
+                        <br>
+                        <a href="@routes.UserController.update()">Settings</a>
+                        <br>
+                        <a href="@routes.UserController.signOut()">SignOut</a>
+                    }
+                    case None => {
+                        <div class="nav flex-column nav-pills" aria-orientation="vertical">
+                            <a class="nav-link" data-toggle="pill" href="@routes.UserController.login()" aria-selected="false">Login</a>
+                            <a class="nav-link" data-toggle="pill" href="@routes.UserController.register()" aria-selected="false">Register</a>
+                        </div>
+                    }
+                }
                 </div>
                 <div class="col-xs-12 col-sm-10">
                     <div class="card">
