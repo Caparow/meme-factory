@@ -14,10 +14,3 @@ services:
     - 5432:5432
     volumes:
     - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
-    networks:
-    - persistence-memefactory
-
-networks:
-  persistence-memefactory:
-    name: persistence-memefactory
-    driver: bridge
