@@ -35,7 +35,7 @@
                     case Some(u) => {
                         <p>@{u.login}</p>
                         <br>
-                        <img src="@routes.UserController.avatarResource()" width="128" height="128"/>
+                        <img src="@routes.UserController.avatarResource(u.id)" width="128" height="128"/>
                         <br>
                         <a href="@routes.UserController.update()">Settings</a>
                         <br>
@@ -73,11 +73,16 @@
                                             </video>
                                         </div>
                                     }
+                                    case tt if ContentTypes.isAudio(tt) => {
+                                        <audio controls>
+                                            <source src="@routes.FeedController.resource(c.memeID, c.num)" type="audio/mpeg">
+                                        </audio>
+                                    }
                                     case _ => {}
                                 }
                             }
                             <div class="card-footer text-muted">
-                                Author: @{meme.memeItem.login}
+                                Author: <a href="@routes.UserController.user(meme.memeItem.author)">@{meme.memeItem.login}</a>
                                     <br>
                                 Created at: @{meme.memeItem.timestamp}
                             </div>
@@ -104,7 +109,7 @@
                                     Points: @{comment.points}
                                 </form>
                             </div>
-                            <h5 class="card-title">Author: @{comment.login}</h5>
+                            <h5 class="card-title">Author: <a href="@routes.UserController.user(comment.author)">@{comment.login}</a></h5>
                             <p class="card-text"> @{ comment.comment } </p>
                             <div class="card-footer text-muted">
                                 Created at: @{comment.timestamp}

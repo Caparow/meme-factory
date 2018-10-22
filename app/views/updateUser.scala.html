@@ -32,7 +32,7 @@
                 <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
                     <p>@{user.login}</p>
                     <br>
-                    <img src="@routes.UserController.avatarResource()" width="128" height="128"/>
+                    <img src="@routes.UserController.avatarResource(user.id)" width="128" height="128"/>
                     <br>
                     <a href="@routes.UserController.update()">Settings</a>
                     <br>

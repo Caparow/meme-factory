@@ -58,7 +58,7 @@ class UserController @Inject()(
       val surnameField = dataParts.get("surnameField").flatMap(_.headOption)
       val firstNameField = dataParts.get("firstNameField").flatMap(_.headOption)
       val avatar = request.body.file("avatar").flatMap { image =>
-        Try{
+        Try {
           val encoded = Base64.getEncoder.encodeToString(Files.readAllBytes(Paths.get(image.ref.file.getAbsolutePath)))
           val filename = Paths.get(image.filename).getFileName.toString
           val cType = filename.substring(filename.lastIndexOf("."))
@@ -98,7 +98,7 @@ class UserController @Inject()(
       val surnameField = dataParts.get("surnameField").flatMap(_.headOption)
       val firstNameField = dataParts.get("firstNameField").flatMap(_.headOption)
       val avatar = request.body.file("avatar").flatMap { image =>
-        Try{
+        Try {
           val encoded = Base64.getEncoder.encodeToString(Files.readAllBytes(Paths.get(image.ref.file.getAbsolutePath)))
           val filename = Paths.get(image.filename).getFileName.toString
           val cType = filename.substring(filename.lastIndexOf("."))
@@ -128,9 +128,8 @@ class UserController @Inject()(
     res.getOrElse(Future(BadRequest("Form is invalid")))
   }
 
-  def avatarResource = authAction { implicit request =>
-    val id = request.session.get(deadboltConfig.identifierKey).getOrElse("")
-    userService.getAvatar(id.toLong).convert { contentO =>
+  def avatarResource(id: Long) = authAction { implicit request =>
+    userService.getAvatar(id).convert { contentO =>
       contentO.map { content =>
         val bytes = Base64.getDecoder.decode(content._1)
         val tempFile = File.createTempFile("avatar", content._2)
@@ -143,6 +142,14 @@ class UserController @Inject()(
     }.unsafeToFuture()
   }
 
+  def user(idS: Long) = Action.async { implicit request =>
+    val id = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption)
+    userService.getUser(idS).convert { uS =>
+      val u = id.map(i => userService.getUser(i).unsafeRunSync().right.get)
+      Ok(views.html.user(uS, u))
+    }.unsafeToFuture()
+  }
+
   def login = Action { implicit request =>
     Ok(views.html.login("Please sign in"))
   }
@@ -151,7 +158,7 @@ class UserController @Inject()(
     Ok(views.html.signup())
   }
 
-  def update = Action.async { implicit request =>
+  def update = authAction { implicit request =>
     val id = request.session.get(deadboltConfig.identifierKey).getOrElse("").toLong
     userService.getUser(id).convert { u =>
       Ok(views.html.updateUser(u))

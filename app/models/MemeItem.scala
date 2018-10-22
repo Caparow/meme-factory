@@ -45,10 +45,14 @@ case class Content(memeID: Long, contentType: String, content: String, num: Long
 object ContentTypes {
   val HTML = "HTML"
   val TEXT = "TEXT"
+
   val IMAGE_PNG = ".png"
   val IMAGE_JPG = ".jpg"
   val IMAGE_GIF = ".gif"
+
   val VIDEO_MP4 = ".mp4"
+
+  val AUDIO_MP3 = ".mp3"
 
   def isImage(t: String): Boolean = {
     t == IMAGE_JPG || t == IMAGE_PNG || t == IMAGE_GIF
@@ -56,6 +60,10 @@ object ContentTypes {
 
   def isVideo(t: String): Boolean = {
     t == VIDEO_MP4
+  }
+
+  def isAudio(t: String): Boolean = {
+    t == AUDIO_MP3
   }
 }
 

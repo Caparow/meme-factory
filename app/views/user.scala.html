@@ -1,4 +1,4 @@
-@(memeList: List[MemeItemWithId], user: Option[UserWithId] = None)
+@(userToShow: UserWithId, user: Option[UserWithId] = None)
 
 <!DOCTYPE html>
 
@@ -50,46 +50,15 @@
                     }
                 </div>
                 <div class="col-xs-12 col-sm-10">
-                @for(meme <- memeList) {
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-header">
-                                <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
-                                <form method="post" target="hiddenFrame">
-                                    <input class="btn btn-primary" type="submit" name="+" value="+" formaction="@routes.FeedController.upVotePost(meme.id)"  />
-                                    <input class="btn btn-primary" type="submit" name="-" value="-" formaction="@routes.FeedController.downVotePost(meme.id)"/>
-                                    Points: @{meme.points}
-                                </form>
-                            </div>
-                            <h5 class="card-title"> <a href="@routes.FeedController.post(meme.id)">@{ meme.title }</a></h5>
-                            @for(c <- meme.content.sortWith(_.num < _.num)) {
-                                @c.contentType match {
-                                    case "TEXT" => { <p class="card-text"> @{ c.content } </p> }
-                                    case "HTML" => { @{ c.content } }
-                                    case tt if ContentTypes.isImage(tt) => { <img class="card-img" src="@routes.FeedController.resource(c.memeID, c.num)" /> }
-                                    case tt if ContentTypes.isVideo(tt) => {
-                                        <div class="embed-responsive embed-responsive-16by9">
-                                            <video controls  class="embed-responsive-item">
-                                                <source src="@routes.FeedController.resource(c.memeID, c.num)" type="video/mp4">
-                                            </video>
-                                        </div>
-                                    }
-                                    case tt if ContentTypes.isAudio(tt) => {
-                                        <audio controls>
-                                            <source src="@routes.FeedController.resource(c.memeID, c.num)" type="audio/mpeg">
-                                        </audio>
-                                    }
-                                    case _ => {}
-                                }
-                            }
-                            <div class="card-footer text-muted">
-                                Author: <a href="@routes.UserController.user(meme.author)">@{meme.login}</a>
-                                    <br>
-                                Created at: @{meme.timestamp}
-                            </div>
-                        </div>
-                    </div>
-                }
+                    <p>@{userToShow.login}</p>
+                    <br>
+                    <img src="@routes.UserController.avatarResource(userToShow.id)" width="128" height="128"/>
+                    <br>
+                    <p>
+                        Name: @{userToShow.name}
+                        <br>
+                        Surname: @{userToShow.surname}
+                    </p>
                 </div>
             </div>
         </div>

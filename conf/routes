@@ -10,8 +10,8 @@ GET         /error                    controllers.Application.error(cause : Stri
 
 GET         /hottest                  controllers.FeedController.hottest()
 GET         /latest                   controllers.FeedController.latest()
-GET         /image                    controllers.FeedController.resource(memeId : Long, num : Long)
-GET         /avatar                   controllers.UserController.avatarResource
+GET         /resource                 controllers.FeedController.resource(memeId : Long, num : Long)
+GET         /avatar                   controllers.UserController.avatarResource(id : Long)
 GET         /signout                  controllers.UserController.signOut
 
 GET         /post                     controllers.FeedController.post(id : Long)
@@ -26,6 +26,7 @@ POST        /downVoteMeme             controllers.FeedController.downVotePost(id
 POST        /upVoteComment            controllers.FeedController.upVoteComment(id : Long)
 POST        /downVoteComment          controllers.FeedController.downVoteComment(id : Long)
 
+GET         /user                     controllers.UserController.user(id : Long)
 GET         /user/login               controllers.UserController.login()
 POST        /user/loginForm           controllers.UserController.loginForm
 

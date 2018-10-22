@@ -77,6 +77,9 @@ class FeedController @Inject()(
         case tt if ContentTypes.isVideo(tt) =>
           val io = FileIO.fromPath(path)
           Ok.chunked(io)
+        case tt if ContentTypes.isAudio(tt) =>
+          val io = FileIO.fromPath(path)
+          Ok.chunked(io)
         case _ => Ok(content.content)
       }
     }.unsafeToFuture()
