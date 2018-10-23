@@ -5,6 +5,7 @@ target
 tmp
 .history
 dist
+node_modules
 /.idea
 /*.iml
 /out
