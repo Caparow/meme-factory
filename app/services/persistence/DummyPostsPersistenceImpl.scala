@@ -1,23 +1,25 @@
 package services.persistence
 
 import cats.effect.IO
+import com.google.inject.{Inject, Singleton}
 import models._
 import services.persistence.PostsPersistence.FeedOffset
 
 import scala.collection.mutable
 import scala.util.Random
 
-class DummyPostsPersistenceImpl(
-                                 usersPersistence: UsersPersistence
-                               ) extends PostsPersistence {
+@Singleton
+class DummyPostsPersistenceImpl @Inject()(
+                                           usersPersistence: UsersPersistence
+                                         ) extends PostsPersistence {
   val memes: mutable.HashMap[Long, MemeItem] = mutable.HashMap.empty[Long, MemeItem]
   val comments: mutable.HashMap[Long, CommentItem] = mutable.HashMap.empty[Long, CommentItem]
 
   override def createPost(feedItem: MemeItem): IO[MemeItemWithId] = synchronized {
-    val id = Random.nextInt()
-    memes.put(id, feedItem)
+    val id = Random.nextLong()
+    memes.put(id, feedItem.copy(content = feedItem.content.map(_.copy(memeID = id))))
     import feedItem._
-    IO.pure(MemeItemWithId(id, title, timestamp, content, points, author,
+    IO.pure(MemeItemWithId(id.toLong, title, timestamp, content, points, author,
       usersPersistence.get(author).unsafeRunSync().map(_.login).getOrElse("")))
   }
 
