@@ -14,7 +14,7 @@ gulp.task('watch', function() {
 gulp.task('compress-js', function() {
     gulp.src('app/scripts/*.js')
     .pipe(uglifyjs())
-    .pipe(gulp.dest('app/dist/js'))
+    .pipe(gulp.dest('public/js/'))
 });
 
 gulp.task('work-on-css', function() {
@@ -28,5 +28,5 @@ gulp.task('work-on-css', function() {
         maxLineLen: 80,
         uglyComments: true
     }))
-    .pipe(gulp.dest('app/dist/css'))
+    .pipe(gulp.dest('public/css'))
 })
