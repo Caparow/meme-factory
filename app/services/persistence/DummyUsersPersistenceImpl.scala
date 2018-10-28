@@ -1,12 +1,14 @@
 package services.persistence
 
 import cats.effect.IO
+import com.google.inject.{Inject, Singleton}
 import models.{User, UserWithId}
 
 import scala.collection.mutable
 import scala.util.Random
 
-class DummyUsersPersistenceImpl extends UsersPersistence {
+@Singleton
+class DummyUsersPersistenceImpl @Inject() extends UsersPersistence {
   private val content: mutable.HashMap[Long, User] = mutable.HashMap.empty[Long, User]
 
   override def create(user: User): IO[UserWithId] = synchronized {
