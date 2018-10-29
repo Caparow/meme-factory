@@ -1,0 +1,38 @@
+@font-face{font-family:'Exo 2';font-style:normal;font-weight:400;src:local("Exo 2"),local("Exo2-Regular"),url(https://fonts.gstatic.com/s/exo2/v4/7cHmv4okm5zmbtYsK-4E4Q.woff2) format("woff2");unicode-range:U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116}
+@font-face{font-family:'Exo 2';font-style:normal;font-weight:400;src:local("Exo 2"),local("Exo2-Regular"),url(https://fonts.gstatic.com/s/exo2/v4/7cHmv4okm5zmbtYmK-4E4Q.woff2) format("woff2");unicode-range:U+0100-024F,U+0259,U+1E00-1EFF,U+2020,U+20A0-20AB,U+20AD-20CF,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:'Exo 2';font-style:normal;font-weight:400;src:local("Exo 2"),local("Exo2-Regular"),url(https://fonts.gstatic.com/s/exo2/v4/7cHmv4okm5zmbtYoK-4.woff2) format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+2074,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+*{font-family:'Exo 2',sans-serif}.navbar.navbar-light{padding:.05rem 1rem;position:relative}
+.navbar.navbar-light .navbar-nav{width:100%;-webkit-box-pack:center;-ms-flex-pack:center;justify-content:center;position:relative;padding-right:15rem}
+.navbar.navbar-light .navbar-nav .nav-item{padding:0 20px}.navbar.navbar-light .navbar-nav .nav-item:last-child{padding:0;position:absolute;right:0}
+.navbar.navbar-light .navbar-nav .nav-link{color:#bfbfbf;-webkit-transition:color .3s ease-out;transition:color .3s ease-out}
+.navbar.navbar-light .navbar-nav .nav-link:hover{color:#fff}.navbar.navbar-light .navbar-toggler{color:#fff;border-color:#fff;-webkit-transition:color .3s ease-out,border-color .3s ease-out;transition:color .3s ease-out,border-color .3s ease-out;outline:0;cursor:pointer}
+.navbar.navbar-light .navbar-toggler .navbar-toggler-icon{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#fff' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");-webkit-transition:background-image .3s ease-out;transition:background-image .3s ease-out}
+.navbar.navbar-light .navbar-toggler.collapsed{color:#bfbfbf;border-color:#bfbfbf}
+.navbar.navbar-light .navbar-toggler.collapsed:hover{color:#fff;border-color:#fff}
+.navbar.navbar-light .navbar-toggler.collapsed .navbar-toggler-icon{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#bfbfbf' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");-webkit-transition:background-image .3s ease-out;transition:background-image .3s ease-out}
+.navbar-brand{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-direction:row;flex-direction:row;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;-webkit-box-align:center;-ms-flex-align:center;align-items:center}
+.navbar-brand-image{width:50px}.navbar-brand-slogan{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;color:white;margin-left:10px}
+.navbar-brand-slogan h1{font-size:2rem;margin-bottom:.25rem}.navbar-brand-slogan--text{font-size:.7em}
+.navbar-search-form{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-direction:row;flex-direction:row;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;-webkit-box-align:center;-ms-flex-align:center;align-items:center;position:relative}
+.navbar-search-form .form-control{width:100%;margin:0 !important;padding:.375rem 1.25rem .375rem .75rem}
+.navbar-search-form .search-btn{width:20px;height:20px;overflow:hidden;border:0;background:transparent;color:transparent;position:absolute;right:5px;padding:0;cursor:pointer}
+.navbar-search-form .search-btn:focus{outline:0}.navbar-search-form .search-btn:before{color:gray;content:'\f002';font-family:'Font Awesome 5 Free';font-weight:900;width:100%;display:block;position:absolute;-webkit-transition:color .3s ease-out;transition:color .3s ease-out}
+.navbar-search-form .search-btn-focused:before,.navbar-search-form .search-btn-focused.search-btn-hovered:before{color:#00bc8c}
+.navbar-search-form .search-btn-hovered:before{color:#bfbfbf}.form-control{background-color:transparent;border-bottom:1px solid gray;color:gray;-webkit-transition:color .3s ease-out,border-bottom .3s ease-out;transition:color .3s ease-out,border-bottom .3s ease-out}
+.form-control::-webkit-input-placeholder{color:gray;-webkit-transition:color .3s ease-out;transition:color .3s ease-out}
+.form-control:-ms-input-placeholder{color:gray;-webkit-transition:color .3s ease-out;transition:color .3s ease-out}
+.form-control::-ms-input-placeholder{color:gray;-webkit-transition:color .3s ease-out;transition:color .3s ease-out}
+.form-control::placeholder{color:gray;-webkit-transition:color .3s ease-out;transition:color .3s ease-out}
+.form-control:hover{color:#bfbfbf;border-bottom-color:#bfbfbf}.form-control:hover::-webkit-input-placeholder{color:#bfbfbf}
+.form-control:hover:-ms-input-placeholder{color:#bfbfbf}.form-control:hover::-ms-input-placeholder{color:#bfbfbf}
+.form-control:hover::placeholder{color:#bfbfbf}.form-control:focus{background-color:transparent;border-color:transparent;border-bottom:1px solid #00bc8c;-webkit-box-shadow:none;box-shadow:none;color:#00bc8c}
+.form-control:focus::-webkit-input-placeholder{color:#00bc8c}.form-control:focus:-ms-input-placeholder{color:#00bc8c}
+.form-control:focus::-ms-input-placeholder{color:#00bc8c}.form-control:focus::placeholder{color:#00bc8c}
+@media(min-width:992px){.navbar>.navbar-search-form{display:none}.navbar-search-form{width:16rem}
+}@media(max-width:991px){.navbar.navbar-light .navbar-nav{padding:0}.navbar.navbar-light .navbar-nav .nav-item{padding:0}
+.navbar.navbar-light .navbar-nav .nav-item:last-child{position:relative}.navbar-collapse{padding-bottom:10px}
+}@media(min-width:501px) and (max-width:991px){.navbar-collapse .navbar-search-form{display:none}
+}@media(min-width:700px) and (max-width:991px){.navbar-search-form{width:16rem}}@media(max-width:500px){.navbar>.navbar-search-form{display:none}
+}@media(min-width:361px) and (max-width:375px){.navbar-brand-slogan h1{font-size:1.8rem}
+}@media(max-width:360px){.navbar.navbar-light .navbar-toggler{padding:.25rem .5rem}
+.navbar-brand-slogan h1{font-size:1.5rem}}
