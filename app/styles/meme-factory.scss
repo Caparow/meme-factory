@@ -24,8 +24,9 @@
 }
 
 html, body {
-    width: 100vw;
-    height: 100vh;
+    max-width: 100vw;
+    overflow-x: hidden;
+    min-height: 100vh;
 }
 
 body {
@@ -314,11 +315,10 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    height: 88%;
-    padding: 0 2rem;
+    padding: 0 3rem;
 
-    .footer-brand, .authors-info {
-        width: 35%;
+    hr {
+        display: none;
     }
 
     .footer-brand-link {
@@ -336,7 +336,6 @@ body {
             flex-direction: column;
             justify-content: space-between;
             color: white;
-            margin-left: 10px;
             
             h1 {
                 font-size: 2rem;
@@ -350,8 +349,62 @@ body {
     }
 }
 
+.authors-section {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding-top: 20px;
+
+    .title {
+        text-align: center;
+        font-size: 1.5em;
+        margin: 0 0 10px;
+    }
+}
+
+.authors-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+    align-items: center;
+
+    .author-one, .author-two {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: 20px;
+    }
+
+    .image {
+        border-radius: 100%;
+        overflow: hidden;
+        width: 100px;
+        height: 100px;
+        border: 1px solid #303030;
+
+        img {
+            width: 100px;
+        }
+    }
+
+    .info {
+        h4 {
+            margin-bottom: 0.2rem;
+            font-size: 1.2rem;
+        }
+
+        div {
+            font-size: 0.9em;
+        }
+
+        h4, div {
+            text-align: center;
+        }
+    }
+}
+
 .footer-copyright {
-    height: 12%;
+    margin-top: 20px;
     text-align: center;
 }
 
@@ -365,8 +418,34 @@ body {
     .navbar .navbar-light {
         height: 300px;
     }
+
+    .footer-inner-wrapper {
+        padding: 0 2rem;
+    }
+
+    .authors-section {
+        padding-top: 10px;
+
+        .title {
+            margin: 0 0 5px;
+        }
+    }
 }
 
+@media (max-width: 1023px) {
+    .authors-info {
+        .info {
+            h4 {
+                font-size: 1.1rem;
+                margin-bottom: .1rem;
+            }
+        }
+    }
+
+    .footer-inner-wrapper {
+        padding: 0 1.5rem;
+    }
+}
 
 @media (min-width: 992px) {
     .navbar > .navbar-search-form {
@@ -422,6 +501,92 @@ body {
     .navbar > .navbar-search-form {
         display: none;
     }
+
+    .authors-section {
+        padding: 0;
+
+        .title {
+            font-size: 1.6em;
+        }
+    }
+
+    .authors-info {
+        .author-one, .author-two {
+            margin: 0 40px;
+        }
+        
+        .info {
+            h4 {
+                font-size: 1.1rem;
+                margin-bottom: .1rem;
+            }
+        }
+    }
+
+    .meme-footer {
+        height: auto;
+    }
+
+    .footer-inner-wrapper {
+        padding: .5rem 1rem 0;
+        flex-direction: column;
+
+        hr {
+            display: block;
+            width: 100%;
+            margin: 15px 0;
+            padding: 1px 0 0;
+            border: 0;
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #303030, rgba(0, 0, 0, 0));
+        }
+    }
+
+    .footer-copyright {
+        margin: 30px 0 5px;
+    }
+}
+
+@media (min-width: 376px) and (max-width: 414px) {
+    body {
+        padding-bottom: 530px;
+    }
+}
+
+@media (min-width: 321px) and (max-width: 375px) {
+    body {
+        padding-bottom: 755px;
+    }
+
+    .authors-info {
+        flex-direction: column;
+
+        .info {
+            h4 {
+                font-size: 1.4rem;
+            }
+
+            div {
+                font-size: 1em;
+            }
+        }
+
+        .image {
+            width: 150px;
+            height: 150px;
+
+            img {
+                width: 150px;
+            }
+        }
+
+        .author-one, .author-two {
+            margin: 0;
+        }
+        
+        .author-one {
+            margin-bottom: 10px;
+        }
+    }
 }
 
 @media (min-width: 361px) and (max-width: 375px) {
@@ -441,6 +606,43 @@ body {
     .navbar-brand-slogan {
         h1 {
             font-size: 1.5rem;
+        }
+    }
+}
+
+@media (max-width: 320px) {
+    body {
+        padding-bottom: 765px;
+    }
+    
+    .authors-info {
+        flex-direction: column;
+
+        .info {
+            h4 {
+                font-size: 1.4rem;
+            }
+
+            div {
+                font-size: 1em;
+            }
+        }
+
+        .image {
+            width: 150px;
+            height: 150px;
+
+            img {
+                width: 150px;
+            }
+        }
+
+        .author-one, .author-two {
+            margin: 0;
+        }
+        
+        .author-one {
+            margin-bottom: 10px;
         }
     }
 }
