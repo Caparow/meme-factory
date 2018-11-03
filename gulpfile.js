@@ -13,7 +13,7 @@ gulp.task('watch', function() {
 
 gulp.task('compress-js', function() {
     gulp.src('app/scripts/*.js')
-    .pipe(uglifyjs())
+    //.pipe(uglifyjs())
     .pipe(gulp.dest('public/js/'))
 });
 

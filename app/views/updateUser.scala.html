@@ -69,7 +69,10 @@
                 <div class="col-xs-12 col-sm-10">
                     <div class="container">
                         <form class="form-signup" action="/user/updateForm" method="post" role="form" enctype="multipart/form-data">
-                            <h2 class="form-signin-heading">Please Update User Profile</h2>
+                            <h2 class="form-signin-heading">Update Your Profile</h2>
+                            
+                            <div class="form-signin-subheading">It hardly takes more than 30 seconds.</div>
+                            
                             <label for="loginField" class="sr-only">Email address</label>
                             <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" value="@{user.login}" required autofocus>
 
@@ -85,12 +88,31 @@
                             <label for="avatar">Attach user profile image</label>
                             <input type="file" accept="image/*" name="avatar" class="form-control-file" id="avatar" aria-describedby="fileHelp">
 
-                            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Update">
+                            <input class="btn btn-lg btn-primary btn-block btn-submit" type="submit" value="Update">
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <footer class="meme-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4">
+                        <a class="footer-brand" href="#">
+                            <img class="navbar-brand-image" src='@routes.Assets.versioned("images/brand-logo.png")' alt="Meme-factory logo">
+                        
+                            <div class="navbar-brand-slogan">
+                                <h1>Meme Factory</h1>
+                                <span class="navbar-brand-slogan--text">Inspire. Create. Post.</span>
+                            </div>
+                        </a>
+                    </div>
+                    <div class="col-xs-12 col-sm-4">hey</div>
+                    <div class="col-xs-12 col-sm-4">hey</div>
+                </div>
+            </div>
+        </footer>
 
         <script src='@routes.Assets.versioned("libs/js/jquery-3.3.1.min.js")'></script>
         <script src='@routes.Assets.versioned("libs/js/bootstrap.min.js")'></script>

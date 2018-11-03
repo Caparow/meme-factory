@@ -69,10 +69,14 @@
                     <div class="container">
                         <form class="form-signup" action="/user/registerForm" method="post" role="form" enctype="multipart/form-data">
                             <h2 class="form-signin-heading">Please sign up</h2>
+                            <div class="form-signin-subheading">It hardly takes more than 30 seconds.</div>
+
                             <label for="loginField" class="sr-only">Email address</label>
                             <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" required autofocus>
+
                             <label for="passwordField" class="sr-only">Password</label>
                             <input type="password" id="passwordField" name="passwordField" class="form-control" placeholder="Password" required>
+
                             <label for="firstNameField" class="sr-only">First Name</label>
                             <input type="text" id="firstNameField" name="firstNameField" class="form-control" placeholder="First Name">
 
@@ -82,12 +86,22 @@
                             <label for="avatar">Attach user profile image</label>
                             <input type="file" accept="image/*" name="avatar" class="form-control-file" id="avatar" aria-describedby="fileHelp">
 
-                            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Sign Up">
+                            <input class="btn btn-lg btn-primary btn-block btn-submit" type="submit" value="Update">
                         </form>
                     </div>
                 </div>
             </div>
         </div>
+
+        <footer class="meme-footer">
+            <div class="container">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-4">hey</div>
+                    <div class="col-xs-12 col-sm-4">hey</div>
+                    <div class="col-xs-12 col-sm-4">hey</div>
+                </div>
+            </div>
+        </footer>
 
         <script src='@routes.Assets.versioned("libs/js/jquery-3.3.1.min.js")'></script>
         <script src='@routes.Assets.versioned("libs/js/bootstrap.min.js")'></script>

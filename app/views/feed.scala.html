@@ -56,7 +56,7 @@
         </nav>
 
         <div class="container-fluid">
-            <div class="row row-offcanvas row-offcanvas-left">
+            <div class="row row-offcanvas row-offcanvas-left main-feed">
                 <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
                     @user match {
                         case Some(u) => {
@@ -82,9 +82,9 @@
                         <div class="card-body">
                             <div class="card-header">
                                 <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
-                                <form method="post" target="hiddenFrame">
-                                    <input class="btn btn-primary" type="submit" name="+" value="+" formaction="@routes.FeedController.upVotePost(meme.id)"  />
-                                    <input class="btn btn-primary" type="submit" name="-" value="-" formaction="@routes.FeedController.downVotePost(meme.id)"/>
+                                <form id="votingForm" method="post" target="hiddenFrame">
+                                    <input id="upVotePost" class="btn btn-primary" type="submit" name="+" value="+" formaction="@routes.FeedController.upVotePost(meme.id)"  />
+                                    <input id="downVotePost" class="btn btn-primary" type="submit" name="-" value="-" formaction="@routes.FeedController.downVotePost(meme.id)"/>
                                     Points: @{meme.points}
                                 </form>
                             </div>
@@ -93,7 +93,7 @@
                                 @c.contentType match {
                                     case "TEXT" => { <p class="card-text"> @{ c.content } </p> }
                                     case "HTML" => { @{ c.content } }
-                                    case tt if ContentTypes.isImage(tt) => { <img class="card-img" src="@routes.FeedController.resource(c.memeID, c.num)" /> }
+                                    case tt if ContentTypes.isImage(tt) => { <div class="card-image-wrapper"><img class="card-img" src="@routes.FeedController.resource(c.memeID, c.num)" /></div> }
                                     case tt if ContentTypes.isVideo(tt) => {
                                         <div class="embed-responsive embed-responsive-16by9">
                                             <video controls  class="embed-responsive-item">
