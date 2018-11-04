@@ -88,28 +88,28 @@ class FeedController @Inject()(
   def upVotePost(id: Long) = authAction { implicit request =>
     val uId: Long = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption).getOrElse(0)
     memeService.upVoteMeme(uId, id).convert { memes =>
-      Ok(views.html.index(memes.asJson.spaces2))
+      Ok(memes.asJson.spaces2)
     }.unsafeToFuture()
   }
 
   def downVotePost(id: Long) = authAction { implicit request =>
     val uId: Long = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption).getOrElse(0)
     memeService.downVoteMeme(uId, id).convert { memes =>
-      Ok(views.html.index(memes.asJson.spaces2))
+      Ok(memes.asJson.spaces2)
     }.unsafeToFuture()
   }
 
   def upVoteComment(id: Long) = authAction { implicit request =>
     val uId: Long = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption).getOrElse(0)
     memeService.upVoteComment(uId, id).convert { memes =>
-      Ok(views.html.index(memes.asJson.spaces2))
+      Ok(memes.asJson.spaces2)
     }.unsafeToFuture()
   }
 
   def downVoteComment(id: Long) = authAction { implicit request =>
     val uId: Long = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption).getOrElse(0)
     memeService.downVoteComment(uId, id).convert { memes =>
-      Ok(views.html.index(memes.asJson.spaces2))
+      Ok(memes.asJson.spaces2)
     }.unsafeToFuture()
   }
 
