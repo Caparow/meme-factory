@@ -82,11 +82,15 @@
                         <div class="card-body">
                             <div class="card-header">
                                 <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
-                                <form id="votingForm" method="post" target="hiddenFrame">
-                                    <input id="upVotePost" class="btn btn-primary" type="submit" name="+" value="+" formaction="@routes.FeedController.upVotePost(meme.id)"  />
-                                    <input id="downVotePost" class="btn btn-primary" type="submit" name="-" value="-" formaction="@routes.FeedController.downVotePost(meme.id)"/>
-                                    Points: @{meme.points}
-                                </form>
+                                <div id="votingForm">
+                                    <button id="upVotePost" class="btn btn-primary" name="+" formaction="@routes.FeedController.upVotePost(meme.id)">+</button>
+                                    <button id="downVotePost" class="btn btn-primary" name="-" formaction="@routes.FeedController.downVotePost(meme.id)">-</button>
+                                    
+                                    <span class="points">
+                                        <span>Points:</span>
+                                        <span class="points-number" id="pointsNumber">@{meme.points}</span>
+                                    </span>
+                                </div>
                             </div>
                             <h5 class="card-title"> <a href="@routes.FeedController.post(meme.id)">@{ meme.title }</a></h5>
                             @for(c <- meme.content.sortWith(_.num < _.num)) {

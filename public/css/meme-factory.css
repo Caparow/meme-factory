@@ -11,10 +11,10 @@ html,body{max-width:100vw;overflow-x:hidden;min-height:100vh}body{padding-bottom
 .navbar.navbar-light .navbar-toggler.collapsed{color:#bfbfbf;border-color:#bfbfbf}
 .navbar.navbar-light .navbar-toggler.collapsed:hover{color:#fff;border-color:#fff}
 .navbar.navbar-light .navbar-toggler.collapsed .navbar-toggler-icon{background-image:url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 30 30' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='#bfbfbf' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3E%3C/svg%3E");-webkit-transition:background-image .3s ease-out;transition:background-image .3s ease-out}
-.navbar.navbar-light .form-control{border-bottom-color:#fff}.navbar.navbar-light .form-control::-webkit-input-placeholder{color:#fff}
-.navbar.navbar-light .form-control:-ms-input-placeholder{color:#fff}.navbar.navbar-light .form-control::-ms-input-placeholder{color:#fff}
-.navbar.navbar-light .form-control::placeholder{color:#fff}.navbar.navbar-light .form-control:focus{color:#fff}
-.navbar.navbar-light .search-btn:before,.navbar.navbar-light .search-btn-focused:before{color:#fff}
+.navbar.navbar-light .search-input{color:#fff}.navbar.navbar-light .form-control{border-bottom-color:#fff}
+.navbar.navbar-light .form-control::-webkit-input-placeholder{color:#fff}.navbar.navbar-light .form-control:-ms-input-placeholder{color:#fff}
+.navbar.navbar-light .form-control::-ms-input-placeholder{color:#fff}.navbar.navbar-light .form-control::placeholder{color:#fff}
+.navbar.navbar-light .form-control:focus{color:#fff}.navbar.navbar-light .search-btn:before,.navbar.navbar-light .search-btn-focused:before{color:#fff}
 .navbar-brand{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:horizontal;-webkit-box-direction:normal;-ms-flex-direction:row;flex-direction:row;-webkit-box-pack:start;-ms-flex-pack:start;justify-content:flex-start;-webkit-box-align:center;-ms-flex-align:center;align-items:center}
 .navbar-brand-image{width:80px;-webkit-filter:drop-shadow(5px 5px 5px #222);filter:drop-shadow(5px 5px 5px #222)}
 .navbar-brand-slogan{display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between;color:white;margin-left:10px}

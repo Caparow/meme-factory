@@ -39,34 +39,29 @@
 
             $('#upVotePost').on('click', function(e) {
                 url = $(e.target).attr('formaction');
+
+                votingFormSubmitAction(url);
             });
 
             $('#downVotePost').on('click', function (e) {
                 url = $(e.target).attr('formaction');
-            });
-
-            $votingForm.on('submit', function() {
-                votingFormSubmitAction(url, $votingForm);
+            
+                votingFormSubmitAction(url);
             });
         })();
 
-        function votingFormSubmitAction(url, $votingForm) {
+        function votingFormSubmitAction(url) {
             var xhr;
 
             xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function () {
                 if (this.readyState == 4 && this.status == 200) {
-                    console.log(xhr.response);
-                    console.log(xhr.responseText);
-
-                    url = '';
+                    $('#pointsNumber').text(xhr.response);
                 }
             }
 
             xhr.open('POST', url, true);
             xhr.send();
-            $votingForm.off('submit')
-            $votingForm.on('submit', votingFormSubmitAction);
         }
     });
 })();
