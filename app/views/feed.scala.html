@@ -36,6 +36,36 @@
         
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item user-nav-item">
+                        <div class="user-panel" id="sidebar" role="navigation">
+                            @user match {
+                                case Some(u) => {
+                                    <div class="user-image">
+                                        <img src="@routes.UserController.avatarResource(u.id)" width="128" height="128" />
+                                    </div>
+                                    <div class="user-menu">
+                                        <div class="user-login">@{u.login}</div>
+                                        <ul class="user-actions-list">
+                                            <li><a class="user-panel-link" href="@routes.UserController.update()">Settings</a></li>
+                                            <li><a class="user-panel-link" href="@routes.UserController.signOut()">SignOut</a></li>
+                                        </ul>
+                                    </div>
+                                } 
+                                
+                                case None => {
+                                    <div class="user-image">
+                                        <img src='@routes.Assets.versioned("images/unknown-user.png")' width="128" height="128" />
+                                    </div>
+                                    <div class="user-menu">
+                                        <ul class="user-actions-list">
+                                            <li><a class="user-panel-link" href="@routes.UserController.login()" aria-selected="false">Login</a></li>
+                                            <li><a class="user-panel-link" href="@routes.UserController.register()" aria-selected="false">Register</a></li>
+                                        </ul>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a>
                     </li>
@@ -55,74 +85,51 @@
             </div>
         </nav>
 
-        <div class="container-fluid">
-            <div class="row row-offcanvas row-offcanvas-left main-feed">
-                <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
-                    @user match {
-                        case Some(u) => {
-                            <p>@{u.login}</p>
-                            <br>
-                            <img src="@routes.UserController.avatarResource(u.id)" width="128" height="128"/>
-                            <br>
-                            <a href="@routes.UserController.update()">Settings</a>
-                            <br>
-                            <a href="@routes.UserController.signOut()">SignOut</a>
-                        }
-                        case None => {
-                            <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                                <a class="nav-link" data-toggle="pill" href="@routes.UserController.login()" aria-selected="false">Login</a>
-                                <a class="nav-link" data-toggle="pill" href="@routes.UserController.register()" aria-selected="false">Register</a>
-                            </div>
-                        }
-                    }
-                </div>
-                <div class="col-xs-12 col-sm-10">
-                @for(meme <- memeList) {
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="card-header">
-                                <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
-                                <div id="votingForm">
-                                    <button id="upVotePost" class="btn btn-primary" name="+" formaction="@routes.FeedController.upVotePost(meme.id)">+</button>
-                                    <button id="downVotePost" class="btn btn-primary" name="-" formaction="@routes.FeedController.downVotePost(meme.id)">-</button>
-                                    
-                                    <span class="points">
-                                        <span>Points:</span>
-                                        <span class="points-number" id="pointsNumber">@{meme.points}</span>
-                                    </span>
-                                </div>
-                            </div>
-                            <h5 class="card-title"> <a href="@routes.FeedController.post(meme.id)">@{ meme.title }</a></h5>
-                            @for(c <- meme.content.sortWith(_.num < _.num)) {
-                                @c.contentType match {
-                                    case "TEXT" => { <p class="card-text"> @{ c.content } </p> }
-                                    case "HTML" => { @{ c.content } }
-                                    case tt if ContentTypes.isImage(tt) => { <div class="card-image-wrapper"><img class="card-img" src="@routes.FeedController.resource(c.memeID, c.num)" /></div> }
-                                    case tt if ContentTypes.isVideo(tt) => {
-                                        <div class="embed-responsive embed-responsive-16by9">
-                                            <video controls  class="embed-responsive-item">
-                                                <source src="@routes.FeedController.resource(c.memeID, c.num)" type="video/mp4">
-                                            </video>
-                                        </div>
-                                    }
-                                    case tt if ContentTypes.isAudio(tt) => {
-                                        <audio controls>
-                                            <source src="@routes.FeedController.resource(c.memeID, c.num)" type="audio/mpeg">
-                                        </audio>
-                                    }
-                                    case _ => {}
-                                }
-                            }
-                            <div class="card-footer text-muted">
-                                Author: <a href="@routes.UserController.user(meme.author)">@{meme.login}</a>
-                                    <br>
-                                Created at: @{meme.timestamp}
+        <div class="container">
+            @for(meme <- memeList) {
+                <div class="card">
+                    <div class="card-body">
+                        <div class="card-header">
+                            <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
+                            <div id="votingForm">
+                                <button id="upVotePost" class="btn btn-primary" name="+" formaction="@routes.FeedController.upVotePost(meme.id)">+</button>
+                                <button id="downVotePost" class="btn btn-primary" name="-" formaction="@routes.FeedController.downVotePost(meme.id)">-</button>
+                                
+                                <span class="points">
+                                    <span>Points:</span>
+                                    <span class="points-number" id="pointsNumber">@{meme.points}</span>
+                                </span>
                             </div>
                         </div>
+                        <h5 class="card-title"> <a href="@routes.FeedController.post(meme.id)">@{ meme.title }</a></h5>
+                        @for(c <- meme.content.sortWith(_.num < _.num)) {
+                            @c.contentType match {
+                                case "TEXT" => { <p class="card-text"> @{ c.content } </p> }
+                                case "HTML" => { @{ c.content } }
+                                case tt if ContentTypes.isImage(tt) => { <div class="card-image-wrapper"><img class="card-img" src="@routes.FeedController.resource(c.memeID, c.num)" /></div> }
+                                case tt if ContentTypes.isVideo(tt) => {
+                                    <div class="embed-responsive embed-responsive-16by9">
+                                        <video controls  class="embed-responsive-item">
+                                            <source src="@routes.FeedController.resource(c.memeID, c.num)" type="video/mp4">
+                                        </video>
+                                    </div>
+                                }
+                                case tt if ContentTypes.isAudio(tt) => {
+                                    <audio controls>
+                                        <source src="@routes.FeedController.resource(c.memeID, c.num)" type="audio/mpeg">
+                                    </audio>
+                                }
+                                case _ => {}
+                            }
+                        }
+                        <div class="card-footer text-muted">
+                            Author: <a href="@routes.UserController.user(meme.author)">@{meme.login}</a>
+                                <br>
+                            Created at: @{meme.timestamp}
+                        </div>
                     </div>
-                }
                 </div>
-            </div>
+            }
         </div>
 
         <footer class="meme-footer">

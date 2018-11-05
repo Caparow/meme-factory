@@ -36,6 +36,20 @@
         
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item user-nav-item">
+                        <div class="user-panel" id="sidebar" role="navigation">
+                            <div class="user-image">
+                                <img src="@routes.UserController.avatarResource(user.id)" />
+                            </div>
+                            <div class="user-menu">
+                                <div class="user-login">@{user.login}</div>
+                                <ul class="user-actions-list">
+                                    <li><a class="user-panel-link" href="@routes.UserController.update()">Settings</a></li>
+                                    <li><a class="user-panel-link" href="@routes.UserController.signOut()">SignOut</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a>
                     </li>
@@ -55,44 +69,31 @@
             </div>
         </nav>
 
-        <div class="container-fluid">
-            <div class="row row-offcanvas row-offcanvas-left">
-                <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
-                    <p>@{user.login}</p>
-                    <br>
-                    <img src="@routes.UserController.avatarResource(user.id)" width="128" height="128"/>
-                    <br>
-                    <a href="@routes.UserController.update()">Settings</a>
-                    <br>
-                    <a href="@routes.UserController.signOut()">SignOut</a>
-                </div>
-                <div class="col-xs-12 col-sm-10">
-                    <div class="container">
-                        <form class="form-signup" action="/user/updateForm" method="post" role="form" enctype="multipart/form-data">
-                            <h2 class="form-signin-heading">Update Your Profile</h2>
-                            
-                            <div class="form-signin-subheading">It hardly takes more than 30 seconds.</div>
-                            
-                            <label for="loginField" class="sr-only">Email address</label>
-                            <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" value="@{user.login}" required autofocus>
-
-                            <label for="passwordField" class="sr-only">Password</label>
-                            <input type="password" id="passwordField" name="passwordField" class="form-control" placeholder="Password" value="@{user.pass}" required>
-
-                            <label for="firstNameField" class="sr-only">First Name</label>
-                            <input type="text" id="firstNameField" name="firstNameField" class="form-control" placeholder="First Name" value="@{user.name}">
-
-                            <label for="surnameField" class="sr-only">Surname</label>
-                            <input type="text" id="surnameField" name="surnameField" class="form-control" placeholder="Surname" value="@{user.surname}">
-
-                            <label for="avatar">Attach user profile image</label>
-                            <input type="file" accept="image/*" name="avatar" class="form-control-file" id="avatar" aria-describedby="fileHelp">
-
-                            <input class="btn btn-lg btn-primary btn-block btn-submit" type="submit" value="Update">
-                        </form>
-                    </div>
-                </div>
-            </div>
+        <div class="container">
+            <form class="form-signup" action="/user/updateForm" method="post" role="form" enctype="multipart/form-data">
+                <h2 class="form-signin-heading">Update Your Profile</h2>
+            
+                <div class="form-signin-subheading">It hardly takes more than 30 seconds.</div>
+            
+                <label for="loginField" class="sr-only">Email address</label>
+                <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" value="@{user.login}"
+                    required autofocus>
+            
+                <label for="passwordField" class="sr-only">Password</label>
+                <input type="password" id="passwordField" name="passwordField" class="form-control" placeholder="Password" value="@{user.pass}"
+                    required>
+            
+                <label for="firstNameField" class="sr-only">First Name</label>
+                <input type="text" id="firstNameField" name="firstNameField" class="form-control" placeholder="First Name" value="@{user.name}">
+            
+                <label for="surnameField" class="sr-only">Surname</label>
+                <input type="text" id="surnameField" name="surnameField" class="form-control" placeholder="Surname" value="@{user.surname}">
+            
+                <label for="avatar">Attach user profile image</label>
+                <input type="file" accept="image/*" name="avatar" class="form-control-file" id="avatar" aria-describedby="fileHelp">
+            
+                <input class="btn btn-lg btn-primary btn-block btn-submit" type="submit" value="Update">
+            </form>
         </div>
 
         <footer class="meme-footer">

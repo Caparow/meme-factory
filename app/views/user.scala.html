@@ -36,6 +36,36 @@
         
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item user-nav-item">
+                        <div class="user-panel" id="sidebar" role="navigation">
+                            @user match {
+                                case Some(u) => {
+                                    <div class="user-image">
+                                        <img src="@routes.UserController.avatarResource(u.id)" width="128" height="128" />
+                                    </div>
+                                    <div class="user-menu">
+                                        <div class="user-login">@{u.login}</div>
+                                        <ul class="user-actions-list">
+                                            <li><a class="user-panel-link" href="@routes.UserController.update()">Settings</a></li>
+                                            <li><a class="user-panel-link" href="@routes.UserController.signOut()">SignOut</a></li>
+                                        </ul>
+                                    </div>
+                                } 
+                                
+                                case None => {
+                                    <div class="user-image">
+                                        <img src='@routes.Assets.versioned("images/unknown-user.png")' width="128" height="128" />
+                                    </div>
+                                    <div class="user-menu">
+                                        <ul class="user-actions-list">
+                                            <li><a class="user-panel-link"  href="@routes.UserController.login()" aria-selected="false">Login</a></li>
+                                            <li><a class="user-panel-link"  href="@routes.UserController.register()" aria-selected="false">Register</a></li>
+                                        </ul>
+                                    </div>
+                                }
+                            }
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a>
                     </li>
@@ -55,39 +85,16 @@
             </div>
         </nav>
 
-        <div class="container-fluid">
-            <div class="row row-offcanvas row-offcanvas-left">
-                <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
-                    @user match {
-                        case Some(u) => {
-                            <p>@{u.login}</p>
-                            <br>
-                            <img src="@routes.UserController.avatarResource(u.id)" width="128" height="128"/>
-                            <br>
-                            <a href="@routes.UserController.update()">Settings</a>
-                            <br>
-                            <a href="@routes.UserController.signOut()">SignOut</a>
-                        }
-                        case None => {
-                            <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                                <a class="nav-link" data-toggle="pill" href="@routes.UserController.login()" aria-selected="false">Login</a>
-                                <a class="nav-link" data-toggle="pill" href="@routes.UserController.register()" aria-selected="false">Register</a>
-                            </div>
-                        }
-                    }
-                </div>
-                <div class="col-xs-12 col-sm-10">
-                    <p>@{userToShow.login}</p>
-                    <br>
-                    <img src="@routes.UserController.avatarResource(userToShow.id)" width="128" height="128"/>
-                    <br>
-                    <p>
-                        Name: @{userToShow.name}
-                        <br>
-                        Surname: @{userToShow.surname}
-                    </p>
-                </div>
-            </div>
+        <div class="container">
+            <p>@{userToShow.login}</p>
+            <br>
+            <img src="@routes.UserController.avatarResource(userToShow.id)" width="128" height="128" />
+            <br>
+            <p>
+                Name: @{userToShow.name}
+                <br>
+                Surname: @{userToShow.surname}
+            </p>
         </div>
 
         <footer class="meme-footer">

@@ -57,6 +57,20 @@
         
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item user-nav-item">
+                        <div class="user-panel" id="sidebar" role="navigation">
+                            <div class="user-image">
+                                <img src="@routes.UserController.avatarResource(user.id)" />
+                            </div>
+                            <div class="user-menu">
+                                <div class="user-login">@{user.login}</div>
+                                <ul class="user-actions-list">
+                                    <li><a class="user-panel-link" href="@routes.UserController.update()">Settings</a></li>
+                                    <li><a class="user-panel-link" href="@routes.UserController.signOut()">SignOut</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a>
                     </li>
@@ -76,37 +90,23 @@
             </div>
         </nav>
 
-
-        <div class="container-fluid">
-            <div class="row row-offcanvas row-offcanvas-left">
-                <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
-                    <p>@{user.login}</p>
-                    <br>
-                    <img src="@routes.UserController.avatarResource(user.id)" width="128" height="128"/>
-                    <br>
-                    <a href="@routes.UserController.update()">Settings</a>
-                    <br>
-                    <a href="@routes.UserController.signOut()">SignOut</a>
+        <div class="container">
+            <h2 class="form-signin-heading">Create Post:</h2>
+            
+            <form class="form-signup" action="/newPostForm" method="post" role="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="titleField" class="sr-only">Title</label>
+                    <input type="text" id="titleField" name="titleField" class="form-control" placeholder="Title" required
+                        autofocus>
                 </div>
-                <div class="col-xs-12 col-sm-10">
-                    <div class="container">
-                        <h2 class="form-signin-heading">Create Post:</h2>
-                        <form class="form-signup" action="/newPostForm" method="post" role="form" enctype="multipart/form-data">
-                            <div class="form-group">
-                                <label for="titleField" class="sr-only">Title</label>
-                                <input type="text" id="titleField" name="titleField" class="form-control" placeholder="Title" required autofocus>
-                            </div>
-
-                        <div class="form-group">
-                            <label for="imageField">Attach video or image</label>
-                            <input type="file" accept="image/*,video/*,audio/mpeg" name="imageField" class="form-control-file" id="imageField" aria-describedby="fileHelp">
-                        </div>
-                        <input class="btn btn-lg btn-primary btn-block" type="submit" value="Create">
-                    </form>
-
+            
+                <div class="form-group">
+                    <label for="imageField">Attach video or image</label>
+                    <input type="file" accept="image/*,video/*,audio/mpeg" name="imageField" class="form-control-file" id="imageField"
+                        aria-describedby="fileHelp">
                 </div>
-                </div>
-            </div>
+                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Create">
+            </form>
         </div>
 
         <footer class="meme-footer">

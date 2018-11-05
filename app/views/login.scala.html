@@ -36,6 +36,19 @@
         
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto">
+                    <li class="nav-item user-nav-item">
+                        <div class="user-panel">
+                            <div class="user-image">
+                                <img src='@routes.Assets.versioned("images/unknown-user.png")' width="128" height="128" />
+                            </div>
+                            <div class="user-menu">
+                                <ul class="user-actions-list">
+                                    <li><a class="user-panel-link" href="@routes.UserController.login()" aria-selected="false">Login</a></li>
+                                    <li><a class="user-panel-link" href="@routes.UserController.register()" aria-selected="false">Register</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a>
                     </li>
@@ -55,32 +68,19 @@
             </div>
         </nav>
 
-        <div class="container-fluid">
-            <div class="row row-offcanvas row-offcanvas-left">
-                <div class="col-xs-6 col-sm-2 sidebar-offcanvas" id="sidebar" role="navigation">
-                    <div class="nav flex-column nav-pills" aria-orientation="vertical">
-                        <a class="nav-link" data-toggle="pill" href="@routes.UserController.login()" aria-selected="false">
-                            Login</a>
-                        <a class="nav-link" data-toggle="pill" href="@routes.UserController.register()" aria-selected="false">
-                            Register</a>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-sm-10">
-                    <div class="container">
-                        <form class="form-signin" action="/user/loginForm" method="post" role="form">
-                            <h2 class="form-signin-heading">@msg</h2>
-                            <label for="loginField" class="sr-only">Email address</label>
-                            <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" required autofocus>
-                            <label for="passwdField" class="sr-only">Password</label>
-                            <input type="password" id="passwdField" name="passwdField" class="form-control" placeholder="Password" required>
-                            
-                            <input class="btn btn-lg btn-primary btn-block btn-login" type="submit" value="Sign in">
-                        </form>
-
-                        <a href="/user/register" class="btn btn-info btn-lg btn-signup" value="Sign Up" style="float: right;">Sign Up</a>
-                    </div>
-                </div>
-            </div>
+        <div class="container">
+            <form class="form-signin" action="/user/loginForm" method="post" role="form">
+                <h2 class="form-signin-heading">@msg</h2>
+                <label for="loginField" class="sr-only">Email address</label>
+                <input type="text" id="loginField" name="loginField" class="form-control" placeholder="Login" required
+                    autofocus>
+                <label for="passwdField" class="sr-only">Password</label>
+                <input type="password" id="passwdField" name="passwdField" class="form-control" placeholder="Password" required>
+        
+                <input class="btn btn-lg btn-primary btn-block btn-login" type="submit" value="Sign in">
+            </form>
+        
+            <a href="/user/register" class="btn btn-info btn-lg btn-signup" value="Sign Up" style="float: right;">Sign Up</a>
         </div>
 
         <footer class="meme-footer">

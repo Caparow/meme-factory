@@ -33,6 +33,23 @@
             })
         })();
 
+        (function initializeUserMenu() {
+            var $userMenu = $('.user-menu');
+
+            $('.user-image').on('click', function(e) {
+                e.stopPropagation();
+                $userMenu.toggle();
+            });
+
+            $(document).on('click', function(e) {
+                var $target = $(e.target);
+
+                if (!$target.hasClass('user-menu') && $target.parents('.user-menu').length === 0) {
+                    $userMenu.hide();
+                }
+            });
+        })();
+
         (function initializeLikeDislike() {
             var url = '',
                 $votingForm = $('#votingForm');
