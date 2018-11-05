@@ -21,6 +21,17 @@
             );
         })();
 
+        (function initializeFormInputs() {
+            var $formInputs = $('.login-field, .password-field, .firstname-field, .surname-field').find('input');
+
+            $formInputs.focusin(function (e) {
+                $(e.target).parent().addClass('form-input-focused');
+            });
+            $formInputs.focusout(function (e) {
+                $(e.target).parent().removeClass('form-input-focused');
+            });
+        })();
+
         (function initializeCollapsableNav() {
             $(document).on('click', function(e) {
                 var $target = $(e.target);

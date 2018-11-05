@@ -36,6 +36,11 @@ body {
 
 * {
     font-family: 'Exo 2', sans-serif;
+    transition: color .3s ease-out;
+}
+
+.navbar-wrapper {
+    box-shadow: 0px 15px 10px -15px #1193A4;
 }
 
 .navbar.navbar-light {
@@ -244,7 +249,6 @@ body {
     margin: auto;
     
     .main-feed {
-    
         .card-img {
             max-width: 500px;
         }
@@ -285,13 +289,72 @@ body {
     }
 }
 
+.encourage-to-sign-up-hr {
+    display: block;
+    width: 100%;
+    margin: 15px 0 10px;
+    padding: 1px 0 0;
+    border: 0;
+    background-image: linear-gradient(to right, rgba(0, 0, 0, 0), #666666, rgba(0, 0, 0, 0));
+}
+
+.encourage-to-sign-up {
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.login-field, .password-field, .firstname-field, .surname-field {
+    margin-bottom: 10px;
+
+    &:hover {
+        &.form-input-focused {
+            .fas {
+                color: #00bc8c;
+            }
+        }
+    }
+
+    &.form-input-focused {
+        .fas {
+            color: #00bc8c;
+        }
+    }
+}
+
+.login-field, .password-field {
+    position: relative;
+    
+    .fas {
+        display: block;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        color: #808080;
+    }
+    
+    &:hover {
+        .fas {
+            color: #bfbfbf;
+        }
+    } 
+}
+
+.attach-profile-image {
+    margin: 10px 0 20px;
+
+    label, input {
+        cursor: pointer;
+
+        *:focus {
+            outline: 0;
+        }
+    }
+}
+
 .form-signup, .form-signin {
     display: flex;
     flex-direction: column;
-
-    input {
-        margin-bottom: 10px;
-    }
 }
 
 .user-panel {
@@ -687,7 +750,7 @@ body {
     }
 
     body {
-        padding-bottom: 530px;
+        padding-bottom: 550px;
     }
 }
 
@@ -697,7 +760,7 @@ body {
     }
 
     body {
-        padding-bottom: 755px;
+        padding-bottom: 775px;
     }
 
     .authors-info {
@@ -759,7 +822,7 @@ body {
 
 @media (max-width: 320px) {
     body {
-        padding-bottom: 765px;
+        padding-bottom: 785px;
     }
 
     .container {

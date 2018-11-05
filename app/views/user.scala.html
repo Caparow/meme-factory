@@ -14,76 +14,78 @@
         <title>Meme Factory</title>
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">
-                <img class="navbar-brand-image" src='@routes.Assets.versioned("images/brand-logo.png")' alt="Meme-factory logo">
-        
-                <div class="navbar-brand-slogan">
-                    <h1>Meme Factory</h1>
-                    <span class="navbar-brand-slogan--text">Inspire. Create. Post.</span>
-                </div>
-            </a>
-        
-            <form class="form-inline navbar-search-form">
-                <input class="form-control mr-sm-2 search-input" type="search" placeholder="Search" aria-label="Search">
-                <button class="search-btn" type="submit">Search</button>
-            </form>
-        
-            <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item user-nav-item">
-                        <div class="user-panel" id="sidebar" role="navigation">
-                            @user match {
-                                case Some(u) => {
-                                    <div class="user-image">
-                                        <img src="@routes.UserController.avatarResource(u.id)" width="128" height="128" />
-                                    </div>
-                                    <div class="user-menu">
-                                        <div class="user-login">@{u.login}</div>
-                                        <ul class="user-actions-list">
-                                            <li><a class="user-panel-link" href="@routes.UserController.update()">Settings</a></li>
-                                            <li><a class="user-panel-link" href="@routes.UserController.signOut()">SignOut</a></li>
-                                        </ul>
-                                    </div>
-                                } 
-                                
-                                case None => {
-                                    <div class="user-image">
-                                        <img src='@routes.Assets.versioned("images/unknown-user.png")' width="128" height="128" />
-                                    </div>
-                                    <div class="user-menu">
-                                        <ul class="user-actions-list">
-                                            <li><a class="user-panel-link"  href="@routes.UserController.login()" aria-selected="false">Login</a></li>
-                                            <li><a class="user-panel-link"  href="@routes.UserController.register()" aria-selected="false">Register</a></li>
-                                        </ul>
-                                    </div>
+        <div class="navbar-wrapper">
+            <nav class="navbar navbar-expand-lg navbar-light bg-light">
+                <a class="navbar-brand" href="#">
+                    <img class="navbar-brand-image" src='@routes.Assets.versioned("images/brand-logo.png")' alt="Meme-factory logo">
+            
+                    <div class="navbar-brand-slogan">
+                        <h1>Meme Factory</h1>
+                        <span class="navbar-brand-slogan--text">Inspire. Create. Post.</span>
+                    </div>
+                </a>
+            
+                <form class="form-inline navbar-search-form">
+                    <input class="form-control mr-sm-2 search-input" type="search" placeholder="Search" aria-label="Search">
+                    <button class="search-btn" type="submit">Search</button>
+                </form>
+            
+                <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            
+                <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                    <ul class="navbar-nav mr-auto">
+                        <li class="nav-item user-nav-item">
+                            <div class="user-panel" id="sidebar" role="navigation">
+                                @user match {
+                                    case Some(u) => {
+                                        <div class="user-image">
+                                            <img src="@routes.UserController.avatarResource(u.id)" width="128" height="128" />
+                                        </div>
+                                        <div class="user-menu">
+                                            <div class="user-login">@{u.login}</div>
+                                            <ul class="user-actions-list">
+                                                <li><a class="user-panel-link" href="@routes.UserController.update()">Settings</a></li>
+                                                <li><a class="user-panel-link" href="@routes.UserController.signOut()">SignOut</a></li>
+                                            </ul>
+                                        </div>
+                                    } 
+                                    
+                                    case None => {
+                                        <div class="user-image">
+                                            <img src='@routes.Assets.versioned("images/unknown-user.png")' width="128" height="128" />
+                                        </div>
+                                        <div class="user-menu">
+                                            <ul class="user-actions-list">
+                                                <li><a class="user-panel-link"  href="@routes.UserController.login()" aria-selected="false">Login</a></li>
+                                                <li><a class="user-panel-link"  href="@routes.UserController.register()" aria-selected="false">Register</a></li>
+                                            </ul>
+                                        </div>
+                                    }
                                 }
-                            }
-                        </div>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@routes.FeedController.latest()">Latest</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="@routes.FeedController.createPost()">New Post</a>
-                    </li>
-                    <li class="nav-item">
-                        <form class="form-inline navbar-search-form">
-                            <input class="form-control mr-sm-2 search-input" type="search" placeholder="Search" aria-label="Search">
-                            <button class="search-btn" type="submit">Search</button>
-                        </form>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@routes.FeedController.latest()">Latest</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@routes.FeedController.createPost()">New Post</a>
+                        </li>
+                        <li class="nav-item">
+                            <form class="form-inline navbar-search-form">
+                                <input class="form-control mr-sm-2 search-input" type="search" placeholder="Search" aria-label="Search">
+                                <button class="search-btn" type="submit">Search</button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
 
         <div class="container">
             <p>@{userToShow.login}</p>
