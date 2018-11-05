@@ -91,19 +91,24 @@
             @for(meme <- memeList) {
                 <div class="card">
                     <div class="card-body">
-                        <div class="card-header">
-                            <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
-                            <div id="votingForm">
-                                <button id="upVotePost" class="btn btn-primary" name="+" formaction="@routes.FeedController.upVotePost(meme.id)">+</button>
-                                <button id="downVotePost" class="btn btn-primary" name="-" formaction="@routes.FeedController.downVotePost(meme.id)">-</button>
-                                
-                                <span class="points">
-                                    <span>Points:</span>
-                                    <span class="points-number" id="pointsNumber">@{meme.points}</span>
-                                </span>
-                            </div>
+                        <div class="voting-form" id="votingForm">
+                            <button id="upVotePost" class="up-vote-post" name="+" formaction="@routes.FeedController.upVotePost(meme.id)">
+                                <i class="fas fa-chevron-up"></i>
+                            </button>
+                            
+                            <span class="points">
+                                <span class="points-number">@{meme.points}</span>
+                            </span>
+                            
+                            <button id="downVotePost" class="down-vote-post" name="-" formaction="@routes.FeedController.downVotePost(meme.id)">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
                         </div>
-                        <h5 class="card-title"> <a href="@routes.FeedController.post(meme.id)">@{ meme.title }</a></h5>
+
+                        <div class="card-header">
+                            <h5 class="card-title"> <a href="@routes.FeedController.post(meme.id)">@{ meme.title }</a></h5>
+                        </div>
+                        
                         @for(c <- meme.content.sortWith(_.num < _.num)) {
                             @c.contentType match {
                                 case "TEXT" => { <p class="card-text"> @{ c.content } </p> }
@@ -125,9 +130,15 @@
                             }
                         }
                         <div class="card-footer text-muted">
-                            Author: <a href="@routes.UserController.user(meme.author)">@{meme.login}</a>
-                                <br>
-                            Created at: @{meme.timestamp}
+                            <div class="author-of-post">
+                                <span>Author:</span>
+                                <a href="@routes.UserController.user(meme.author)">@{meme.login}</a>
+                            </div>
+                            
+                            <div class="created-at">
+                                <span>Created at:</span>
+                                <span class="creating-time">@{meme.timestamp}</span>
+                            </div>
                         </div>
                     </div>
                 </div>

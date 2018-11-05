@@ -61,30 +61,57 @@
             });
         })();
 
+        (function changeTimeFormat() {
+            var $timeElements = $('.creating-time');
+
+            if ($timeElements.length > 0) {
+                $timeElements.each(function(id, elem) {
+                    var $elem = $(elem),
+                        date = Date.parse($elem.text());
+                    
+                    date = new Date(date);
+                    $elem.text(date.toLocaleString());
+                });
+            }
+        })();
+
         (function initializeLikeDislike() {
             var url = '',
                 $votingForm = $('#votingForm');
 
-            $('#upVotePost').on('click', function(e) {
-                url = $(e.target).attr('formaction');
-
-                votingFormSubmitAction(url);
+            $('.up-vote-post').on('click', function(e) {
+                callSubmitAction(e)
             });
 
-            $('#downVotePost').on('click', function (e) {
-                url = $(e.target).attr('formaction');
-            
-                votingFormSubmitAction(url);
+            $('.down-vote-post').on('click', function (e) {
+                callSubmitAction(e)
             });
         })();
 
-        function votingFormSubmitAction(url) {
+        function callSubmitAction(e) {
+            var $target = $(e.target),
+                url;
+
+            if (!$target.attr('formaction')) {
+                url = $target.parent().attr('formaction');
+            } else {
+                url = $target.attr('formaction');
+            }
+
+            $target.parents('.voting-form').addClass('currently-voting');
+
+            votingFormSubmitAction(url, $target);
+        }
+
+        function votingFormSubmitAction(url, target) {
             var xhr;
 
             xhr = new XMLHttpRequest();
-            xhr.onreadystatechange = function () {
+            
+            xhr.onreadystatechange = function (e) {
                 if (this.readyState == 4 && this.status == 200) {
-                    $('#pointsNumber').text(xhr.response);
+                    $('.currently-voting .points-number').text(xhr.response);
+                    $('.currently-voting').removeClass('currently-voting');
                 }
             }
 

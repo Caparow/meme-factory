@@ -90,15 +90,24 @@
         <div class="container">
             <div class="card">
                 <div class="card-body">
-                    <div class="card-header">
-                        <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
-                        <form method="post" target="hiddenFrame">
-                            <input class="btn btn-primary" type="submit" name="+" value="+" formaction="@routes.FeedController.upVotePost(meme.memeItem.id)"  />
-                            <input class="btn btn-primary" type="submit" name="-" value="-" formaction="@routes.FeedController.downVotePost(meme.memeItem.id)"/>
-                            Points: @{meme.memeItem.points}
-                        </form>
+                    <div class="voting-form" id="votingForm">
+                        <button id="upVotePost" class="up-vote-post" name="+" formaction="@routes.FeedController.upVotePost(meme.memeItem.id)">
+                            <i class="fas fa-chevron-up"></i>
+                        </button>
+                    
+                        <span class="points">
+                            <span class="points-number">@{meme.memeItem.points}</span>
+                        </span>
+                    
+                        <button id="downVotePost" class="down-vote-post" name="-" formaction="@routes.FeedController.downVotePost(meme.memeItem.id)">
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
                     </div>
-                    <h5 class="card-title">@{ meme.memeItem.title }</h5>
+                    
+                    <div class="card-header">
+                        <h5 class="card-title">@{ meme.memeItem.title }</h5>
+                    </div>
+
                     @for(c <- meme.memeItem.content.sortWith(_.num < _.num)) {
                         @c.contentType match {
                             case "TEXT" => { <p class="card-text"> @{ c.content } </p> }
@@ -120,9 +129,14 @@
                         }
                     }
                     <div class="card-footer text-muted">
-                        Author: <a href="@routes.UserController.user(meme.memeItem.author)">@{meme.memeItem.login}</a>
-                            <br>
-                        Created at: @{meme.memeItem.timestamp}
+                        <div class="author-of-post">
+                            <span>Author:</span>
+                            <a href="@routes.UserController.user(meme.memeItem.author)">@{meme.memeItem.login}</a>
+                        </div>
+                        <div class="created-at">
+                            <span>Created at:</span>
+                            <span class="creating-time">@{meme.memeItem.timestamp}</span>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -140,7 +154,6 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="card-header">
-                            <iframe name="hiddenFrame" width="0" height="0" border="0" style="display: none;"></iframe>
                             <form method="post" target="hiddenFrame">
                                 <input class="btn btn-primary" type="submit" name="+" value="+" formaction="@routes.FeedController.upVoteComment(comment.id)"  />
                                 <input class="btn btn-primary" type="submit" name="-" value="-" formaction="@routes.FeedController.downVoteComment(comment.id)"/>
@@ -150,7 +163,8 @@
                         <h5 class="card-title">Author: <a href="@routes.UserController.user(comment.author)">@{comment.login}</a></h5>
                         <p class="card-text"> @{ comment.comment } </p>
                         <div class="card-footer text-muted">
-                            Created at: @{comment.timestamp}
+                            <span>Created at:</span>
+                            <span class="creating-time">@{comment.timestamp}</span> 
                         </div>
                     </div>
                 </div>

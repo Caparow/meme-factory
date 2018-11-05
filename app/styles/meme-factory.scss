@@ -303,6 +303,55 @@ body {
     margin-bottom: 10px;
 }
 
+.card {
+    margin-bottom: 15px;
+}
+
+.card-body {
+    position: relative;
+
+    .voting-form {
+        position: absolute;
+        left: -50px;
+        top: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        
+        .up-vote-post, .down-vote-post {
+            background: transparent;
+            border: 0;
+            cursor: pointer;
+
+            .fas {
+                color: #8c8c8c;
+                font-size: 1.6rem;
+                transition: color .3s ease-out;
+            }
+
+            &:focus {
+                outline: 0;
+            }
+
+            &:hover {
+                .fas {
+                    color: #fff;
+                }
+            }
+        }
+
+    }
+
+    .card-header {
+        margin-bottom: 10px;
+
+        .card-title {
+            margin: 0;
+        }
+    }
+}
+
 .login-field, .password-field, .firstname-field, .surname-field {
     margin-bottom: 10px;
 

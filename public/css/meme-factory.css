@@ -41,8 +41,14 @@ html,body{max-width:100vw;overflow-x:hidden;min-height:100vh}body{padding-bottom
 .btn-submit:active,.btn-login:active{background-color:#00694f !important}.btn-signup{background-color:#007e99;width:100%}
 .btn-signup:hover{background-color:#00677e !important}.btn-signup:active{background-color:#005568 !important}
 .encourage-to-sign-up-hr{display:block;width:100%;margin:15px 0 10px;padding:1px 0 0;border:0;background-image:-webkit-gradient(linear,left top,right top,from(rgba(0,0,0,0)),color-stop(#666),to(rgba(0,0,0,0)));background-image:linear-gradient(to right,rgba(0,0,0,0),#666,rgba(0,0,0,0))}
-.encourage-to-sign-up{text-align:center;margin-bottom:10px}.login-field,.password-field,.firstname-field,.surname-field{margin-bottom:10px}
-.login-field:hover.form-input-focused .fas,.password-field:hover.form-input-focused .fas,.firstname-field:hover.form-input-focused .fas,.surname-field:hover.form-input-focused .fas{color:#00bc8c}
+.encourage-to-sign-up{text-align:center;margin-bottom:10px}.card{margin-bottom:15px}
+.card-body{position:relative}.card-body .voting-form{position:absolute;left:-50px;top:20px;display:-webkit-box;display:-ms-flexbox;display:flex;-webkit-box-orient:vertical;-webkit-box-direction:normal;-ms-flex-direction:column;flex-direction:column;-webkit-box-align:center;-ms-flex-align:center;align-items:center;-webkit-box-pack:justify;-ms-flex-pack:justify;justify-content:space-between}
+.card-body .voting-form .up-vote-post,.card-body .voting-form .down-vote-post{background:transparent;border:0;cursor:pointer}
+.card-body .voting-form .up-vote-post .fas,.card-body .voting-form .down-vote-post .fas{color:#8c8c8c;font-size:1.6rem;-webkit-transition:color .3s ease-out;transition:color .3s ease-out}
+.card-body .voting-form .up-vote-post:focus,.card-body .voting-form .down-vote-post:focus{outline:0}
+.card-body .voting-form .up-vote-post:hover .fas,.card-body .voting-form .down-vote-post:hover .fas{color:#fff}
+.card-body .card-header{margin-bottom:10px}.card-body .card-header .card-title{margin:0}
+.login-field,.password-field,.firstname-field,.surname-field{margin-bottom:10px}.login-field:hover.form-input-focused .fas,.password-field:hover.form-input-focused .fas,.firstname-field:hover.form-input-focused .fas,.surname-field:hover.form-input-focused .fas{color:#00bc8c}
 .login-field.form-input-focused .fas,.password-field.form-input-focused .fas,.firstname-field.form-input-focused .fas,.surname-field.form-input-focused .fas{color:#00bc8c}
 .login-field,.password-field{position:relative}.login-field .fas,.password-field .fas{display:block;position:absolute;right:10px;top:50%;-webkit-transform:translate(-50%,-50%);transform:translate(-50%,-50%);color:gray}
 .login-field:hover .fas,.password-field:hover .fas{color:#bfbfbf}.attach-profile-image{margin:10px 0 20px}
