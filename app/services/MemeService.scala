@@ -26,5 +26,9 @@ trait MemeService extends Result {
   def getPostWithComments(id: Long): Result[MemeItemWithComments]
 
   def getContent(memeId: Long, num: Long): Result[Content]
+
+  def getMemePoints(id: Long): Result[Long]
+
+  def getCommentPoints(id: Long): Result[Long]
 }
 

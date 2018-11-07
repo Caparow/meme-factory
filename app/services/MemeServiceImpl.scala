@@ -10,6 +10,15 @@ class MemeServiceImpl @Inject()(
                                  postsPersistence: PostsPersistence
                                ) extends MemeService with ResultExt {
 
+
+  override def getMemePoints(id: Long): Result[Long] = {
+    postsPersistence.getMemePoints(id).succ
+  }
+
+  override def getCommentPoints(id: Long): Result[Long] = {
+    postsPersistence.getCommentPoints(id).succ
+  }
+
   override def getContent(memeId: Long, num: Long): Result[Content] = {
     postsPersistence.getContent(memeId, num).toRes("Image not found.")
   }

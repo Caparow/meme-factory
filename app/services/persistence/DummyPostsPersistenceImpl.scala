@@ -37,6 +37,18 @@ class DummyPostsPersistenceImpl @Inject()(
   }
 
 
+  override def getMemePoints(id: Long): IO[Long] = synchronized {
+    IO.pure {
+      memes(id).points
+    }
+  }
+
+  override def getCommentPoints(id: Long): IO[Long] = synchronized {
+    IO.pure {
+      comments(id).points
+    }
+  }
+
   override def downVotePost(id: Long): IO[Long] = synchronized {
     IO.pure {
       val m = memes(id)

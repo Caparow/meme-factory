@@ -32,6 +32,18 @@ class PostgresUsersPersistenceImpl @Inject()(connector: PostgresConnector) exten
     connector.query(getUserStmt(id).query[UserWithId].option)
   }
 
+  override def getUserMark(itemId: Long, userId: Long, itemType: String): IO[Option[Int]] = {
+    connector.query(getUserMarkStmt(itemId, userId, itemType).query[Int].option)
+  }
+
+  override def updateUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): IO[Unit] = {
+    connector.query(updateUserMarkStmt(mark, itemId, userId, itemType).update.run).map(_ => ())
+  }
+
+  override def setUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): IO[Unit] = {
+    connector.query(insertUserMarkStmt(mark, itemId, userId, itemType).update.run).map(_ => ())
+  }
+
   override def getAvatar(id: Long): IO[Option[(String, String)]] = {
     connector.query(getUserAvatarStmt(id).query[(Option[String], Option[String])].option.map(
       _.flatMap { case (a, t) => a.flatMap(aa => t.map(tt => (aa, tt))) }
@@ -50,6 +62,18 @@ class PostgresUsersPersistenceImpl @Inject()(connector: PostgresConnector) exten
 
 
 object PostgresUsersPersistenceImpl {
+
+  def getUserMarkStmt(itemId: Long, userId: Long, itemType: String): Fragment = {
+    sql"""select mark from user_marks where item_id = $itemId and user_id = $userId and item_type = $itemType;"""
+  }
+
+  def insertUserMarkStmt(mark: Int, itemId: Long, userId: Long, itemType: String): Fragment = {
+    sql"""insert into user_marks(item_id, user_id, item_type, mark) values ($itemId, $userId, $itemType, $mark);"""
+  }
+
+  def updateUserMarkStmt(mark: Long, itemId: Long, userId: Long, itemType: String): Fragment = {
+    sql"""update user_marks set mark = $mark where item_id = $itemId and user_id = $userId and item_type = $itemType;"""
+  }
 
   def getUserAvatarStmt(id: Long): Fragment = {
     sql"""select avatar, avatar_type from users where id = $id;"""

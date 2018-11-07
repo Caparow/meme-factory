@@ -9,7 +9,9 @@ import scala.util.Random
 
 @Singleton
 class DummyUsersPersistenceImpl @Inject() extends UsersPersistence {
+  case class UserMarkKey(itemId: Long, userId: Long, itemType: String)
   private val content: mutable.HashMap[Long, User] = mutable.HashMap.empty[Long, User]
+  private val userMarks: mutable.HashMap[UserMarkKey, Int] = mutable.HashMap.empty[UserMarkKey, Int]
 
   override def create(user: User): IO[UserWithId] = synchronized {
     val id = Random.nextInt()
@@ -33,6 +35,18 @@ class DummyUsersPersistenceImpl @Inject() extends UsersPersistence {
       import v._
       UserWithId(id, v.login, pass, name, surname, avatar, avatarType)
     })
+  }
+
+  override def getUserMark(itemId: Long, userId: Long, itemType: String): IO[Option[Int]] = synchronized {
+    IO.pure(userMarks.get(UserMarkKey(itemId, userId, itemType)))
+  }
+
+  override def updateUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): IO[Unit] = synchronized {
+    IO.pure(userMarks.put(UserMarkKey(itemId, userId, itemType), mark))
+  }
+
+  override def setUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): IO[Unit] = synchronized {
+    IO.pure(userMarks.put(UserMarkKey(itemId, userId, itemType), mark))
   }
 
   override def getAvatar(id: Long): IO[Option[(String, String)]] = synchronized {

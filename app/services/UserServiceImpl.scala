@@ -27,4 +27,18 @@ class UserServiceImpl @Inject()(
   override def updateProfile(userWithId: UserWithId): Result[UserWithId] = {
     usersPersistence.update(userWithId).succ
   }
+
+  override def getUserMark(itemId: Long, userId: Long, itemType: String): Result[Option[Int]] = {
+    usersPersistence.getUserMark(itemId, userId, itemType).succ
+  }
+
+  override def updateUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): Result[Unit] = {
+    usersPersistence.updateUserMark(mark, itemId, userId, itemType).succ
+  }
+
+
+  override def setUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): Result[Unit] = {
+    usersPersistence.setUserMark(mark, itemId, userId, itemType).succ
+  }
+
 }

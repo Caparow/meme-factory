@@ -29,6 +29,10 @@ trait PostsPersistence {
   def getPostWithComments(id: Long): IO[MemeItemWithComments]
 
   def getContent(memeId: Long, num: Long): IO[Option[Content]]
+
+  def getMemePoints(id: Long): IO[Long]
+
+  def getCommentPoints(id: Long): IO[Long]
 }
 
 object PostsPersistence {

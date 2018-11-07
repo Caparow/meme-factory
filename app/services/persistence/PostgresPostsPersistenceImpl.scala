@@ -24,6 +24,14 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
     connector.query(commentQuery)
   }
 
+  override def getMemePoints(id: Long): IO[Long] = {
+    connector.query(getMemePointsStmt(id).query[Long].unique)
+  }
+
+  override def getCommentPoints(id: Long): IO[Long] = {
+    connector.query(getCommentPointsStmt(id).query[Long].unique)
+  }
+
   override def createPost(memeItem: MemeItem): IO[MemeItemWithId] = {
     val postQuery = for {
       _ <- createPostStmt(memeItem).update.run
@@ -151,6 +159,18 @@ object PostgresPostsPersistenceImpl {
 
   def getContentStmt(memeId: Long, num: Long): Fragment = {
     fr"""select meme_id,content_type,content,num from content where meme_id = $memeId and num = $num;"""
+  }
+
+  def getCommentPointsStmt(id: Long): Fragment = {
+    fr"""select points
+        |from comments
+        |where id = $id;""".stripMargin
+  }
+
+  def getMemePointsStmt(id: Long): Fragment = {
+    fr"""select points
+        |from memes
+        |where id = $id;""".stripMargin
   }
 
   def getCommentStmt(id: Long): Fragment = {

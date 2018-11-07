@@ -16,4 +16,10 @@ trait UsersPersistence {
   def get(id: Long): IO[Option[UserWithId]]
 
   def getAvatar(id: Long): IO[Option[(String, String)]]
+
+  def getUserMark(itemId: Long, userId: Long, itemType: String): IO[Option[Int]]
+
+  def updateUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): IO[Unit]
+
+  def setUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): IO[Unit]
 }

@@ -12,4 +12,10 @@ trait UserService extends Result {
   def getAvatar(id: Long): Result[Option[(String, String)]]
 
   def getUser(id: Long): Result[UserWithId]
+
+  def getUserMark(itemId: Long, userId: Long, itemType: String): Result[Option[Int]]
+
+  def updateUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): Result[Unit]
+
+  def setUserMark(mark: Int, itemId: Long, userId: Long, itemType: String): Result[Unit]
 }

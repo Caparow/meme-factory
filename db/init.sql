@@ -33,3 +33,11 @@ CREATE TABLE IF NOT EXISTS "public"."content" (
     "num" integer NOT NULL,
     PRIMARY KEY ("id")
 );
+CREATE TABLE IF NOT EXISTS "public"."user_marks" (
+    "id" serial,
+    "user_id" integer NOT NULL,
+    "item_id" integer NOT NULL,
+    "item_type" text NOT NULL,
+    "mark" integer NOT NULL,
+    PRIMARY KEY ("id")
+);

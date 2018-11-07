@@ -8,14 +8,15 @@ import java.util.Base64
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.FileIO
-import be.objectify.deadbolt.scala.ActionBuilders
+import be.objectify.deadbolt.scala.{ActionBuilders, AuthenticatedRequest}
+import cats.effect.IO
 import com.google.inject.{Inject, Singleton}
 import configs.DeadboltConfig
 import io.circe.syntax._
 import models._
 import models.auth.UserRole
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AbstractController, ControllerComponents}
+import play.api.mvc.{AbstractController, AnyContent, ControllerComponents}
 import services.{MemeService, UserService}
 import services.persistence.PostsPersistence.FeedOffset
 
@@ -41,29 +42,44 @@ class FeedController @Inject()(
 
   def post(id: Long) = Action.async { request =>
     import deadboltConfig._
-    val uId: Option[UserWithId] = request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption)
-      .map(id => userService.getUser(id).unsafeRunSync().right.get)
-    memeService.getPostWithComments(id).convert { post =>
-      Ok(views.html.post(post, uId))
-    }.unsafeToFuture()
+    (for {
+      userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
+      uId <- userId match {
+        case Some(u) => userService.getUser(u).map(_.toOption)
+        case None => IO.pure(None)
+      }
+      res <- memeService.getPostWithComments(id).convert { post =>
+        Ok(views.html.post(post, uId))
+      }
+    } yield res).unsafeToFuture()
   }
 
   def hottest(forDays: Int = 1, feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async { implicit request =>
     import deadboltConfig._
-    val uId: Option[UserWithId] = request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption)
-      .map(id => userService.getUser(id).unsafeRunSync().right.get)
-    memeService.getMostPopular(forDays, feedOffset).convert { memes =>
-      Ok(views.html.feed(memes, uId))
-    }.unsafeToFuture()
+    (for {
+      userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
+      uId <- userId match {
+        case Some(u) => userService.getUser(u).map(_.toOption)
+        case None => IO.pure(None)
+      }
+      res <- memeService.getMostPopular(forDays, feedOffset).convert { memes =>
+        Ok(views.html.feed(memes, uId))
+      }
+    } yield res).unsafeToFuture()
   }
 
   def latest(feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async { request =>
     import deadboltConfig._
-    val uId: Option[UserWithId] = request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption)
-      .map(id => userService.getUser(id).unsafeRunSync().right.get)
-    memeService.getLatest(feedOffset).convert { memes =>
-      Ok(views.html.feed(memes, uId))
-    }.unsafeToFuture()
+    (for {
+      userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
+      uId <- userId match {
+        case Some(u) => userService.getUser(u).map(_.toOption)
+        case None => IO.pure(None)
+      }
+      res <- memeService.getLatest(feedOffset).convert { memes =>
+        Ok(views.html.feed(memes, uId))
+      }
+    } yield res).unsafeToFuture()
   }
 
   def resource(memeId: Long, num: Long) = Action.async {
@@ -85,32 +101,44 @@ class FeedController @Inject()(
     }.unsafeToFuture()
   }
 
-  def upVotePost(id: Long) = authAction { implicit request =>
+  private def vote(id: Long, mark: Int, contentType: String)
+                  (vote: (Long, Long) => IO[Either[ServiceException, Long]])
+                  (getPoints: Long => IO[Either[ServiceException, Long]])
+                  (implicit request: AuthenticatedRequest[AnyContent]) = {
     val uId: Long = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption).getOrElse(0)
-    memeService.upVoteMeme(uId, id).convert { memes =>
+    userService.getUserMark(id, uId, contentType).flatMap {
+      case Right(m) =>
+        m match {
+          case Some(um) =>
+            if (um == 0) {
+              userService.updateUserMark(mark, id, uId, contentType).flatMap { _ => vote(uId, id) }
+            } else if (um == mark) {
+              getPoints(id)
+            } else {
+              userService.updateUserMark(0, id, uId, contentType).flatMap { _ => vote(uId, id) }
+            }
+          case None => userService.setUserMark(mark, id, uId, contentType).flatMap { _ => vote(uId, id) }
+        }
+      case Left(f) => IO.pure(Left(f))
+    }.convert { memes =>
       Ok(memes.asJson.spaces2)
     }.unsafeToFuture()
+  }
+
+  def upVotePost(id: Long) = authAction { implicit request =>
+    vote(id,1,"meme")(memeService.upVoteMeme)(memeService.getMemePoints)
   }
 
   def downVotePost(id: Long) = authAction { implicit request =>
-    val uId: Long = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption).getOrElse(0)
-    memeService.downVoteMeme(uId, id).convert { memes =>
-      Ok(memes.asJson.spaces2)
-    }.unsafeToFuture()
+    vote(id,-1,"meme")(memeService.downVoteMeme)(memeService.getMemePoints)
   }
 
   def upVoteComment(id: Long) = authAction { implicit request =>
-    val uId: Long = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption).getOrElse(0)
-    memeService.upVoteComment(uId, id).convert { memes =>
-      Ok(memes.asJson.spaces2)
-    }.unsafeToFuture()
+    vote(id,1,"comment")(memeService.upVoteComment)(memeService.getCommentPoints)
   }
 
   def downVoteComment(id: Long) = authAction { implicit request =>
-    val uId: Long = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption).getOrElse(0)
-    memeService.downVoteComment(uId, id).convert { memes =>
-      Ok(memes.asJson.spaces2)
-    }.unsafeToFuture()
+    vote(id,-1,"comment")(memeService.downVoteComment)(memeService.getCommentPoints)
   }
 
   def newCommentForm(id: Long) = authAction { implicit request =>
@@ -157,9 +185,14 @@ class FeedController @Inject()(
 
   def createPost() = authAction { request =>
     import deadboltConfig._
-    val u: Option[UserWithId] = request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption)
-      .map(id => userService.getUser(id).unsafeRunSync().right.get)
-    Future(Ok(views.html.create_meme(u.get)))
+    (for {
+      userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
+      uId <- userId match {
+        case Some(u) => userService.getUser(u).map(_.toOption)
+        case None => IO.pure(None)
+      }
+      res = Ok(views.html.create_meme(uId.get))
+    } yield res).unsafeToFuture()
   }
 
   def deleteComment(id: Long) = authAction {
