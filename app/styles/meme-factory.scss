@@ -276,8 +276,9 @@ body {
     }
 }
 
-.btn-signup {
+.btn-signup, .btn-create-post, .btn-create-comment {
     background-color: #007e99;
+    color: #fff;
     width: 100%;
 
     &:hover {
@@ -301,6 +302,14 @@ body {
 .encourage-to-sign-up {
     text-align: center;
     margin-bottom: 10px;
+}
+
+.comments-wrapper {
+    margin-bottom: 20px;
+
+    .card-text {
+        padding: 0 10px;
+    }
 }
 
 .card {

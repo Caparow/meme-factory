@@ -140,35 +140,49 @@
                     </div>
                 </div>
             </div>
+            
+            <div class="comments-wrapper">
+                @for(comment <- meme.comments) {
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="voting-form" id="votingForm">
+                                <button id="upVotePost" class="up-vote-post" name="+" formaction="@routes.FeedController.upVoteComment(comment.id)">
+                                    <i class="fas fa-chevron-up"></i>
+                                </button>
+                            
+                                <span class="points">
+                                    <span class="points-number">@{comment.points}</span>
+                                </span>
+                            
+                                <button id="downVotePost" class="down-vote-post" name="-" formaction="@routes.FeedController.downVoteComment(comment.id)">
+                                    <i class="fas fa-chevron-down"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="card-header">
+                                <h5 class="card-title">Author: <a href="@routes.UserController.user(comment.author)">@{comment.login}</a></h5>
+                            </div>
+                            
+                            <p class="card-text"> @{ comment.comment } </p>
+                            
+                            <div class="card-footer text-muted">
+                                <span>Created at:</span>
+                                <span class="creating-time">@{comment.timestamp}</span> 
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            
             <form class="form-comment" action="@routes.FeedController.newCommentForm(meme.memeItem.id)" method="post" role="form">
                 <div class="form-group">
                     <div id="textField">
-                        <label for="textField">Input Your Comment</label>
+                        <label for="textField">Write a comment:</label>
                         <textarea class="form-control" name="textField" id="textField" rows="3"></textarea>
                     </div>
                 </div>
-                <input class="btn btn-lg btn-primary btn-block" type="submit" value="Create">
+                <input class="btn btn-lg btn-block btn-create-comment" type="submit" value="Create">
             </form>
-
-            @for(comment <- meme.comments) {
-                <div class="card">
-                    <div class="card-body">
-                        <div class="card-header">
-                            <form method="post" target="hiddenFrame">
-                                <input class="btn btn-primary" type="submit" name="+" value="+" formaction="@routes.FeedController.upVoteComment(comment.id)"  />
-                                <input class="btn btn-primary" type="submit" name="-" value="-" formaction="@routes.FeedController.downVoteComment(comment.id)"/>
-                                Points: @{comment.points}
-                            </form>
-                        </div>
-                        <h5 class="card-title">Author: <a href="@routes.UserController.user(comment.author)">@{comment.login}</a></h5>
-                        <p class="card-text"> @{ comment.comment } </p>
-                        <div class="card-footer text-muted">
-                            <span>Created at:</span>
-                            <span class="creating-time">@{comment.timestamp}</span> 
-                        </div>
-                    </div>
-                </div>
-            }
         </div>
 
         <footer class="meme-footer">
