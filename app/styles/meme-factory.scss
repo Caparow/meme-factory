@@ -248,6 +248,11 @@ body {
     width: 60%;
     margin: auto;
     
+    &.container-with-votes {
+        padding-left: 25px;
+        padding-right: 5px;
+    }
+
     .main-feed {
         .card-img {
             max-width: 500px;
@@ -803,22 +808,34 @@ body {
 }
 
 @media (min-width: 376px) and (max-width: 414px) {
-    .container {
-        width: 85%;
-    }
-
     body {
         padding-bottom: 550px;
+    }
+
+    .container {
+        width: 92%;
+    }
+
+    .card-body {
+        .voting-form {
+            left: -38px;
+        }
     }
 }
 
 @media (min-width: 321px) and (max-width: 375px) {
+    body {
+        padding-bottom: 775px;
+    }
+
     .container {
         width: 90%;
     }
 
-    body {
-        padding-bottom: 775px;
+    .card-body {
+        .voting-form {
+            left: -40px;
+        }
     }
 
     .authors-info {
@@ -854,10 +871,6 @@ body {
 }
 
 @media (min-width: 361px) and (max-width: 375px) {
-    .container {
-        width: 80%;
-    }
-
     .navbar-brand-slogan {
         h1 {
             font-size: 1.8rem;
@@ -884,7 +897,13 @@ body {
     }
 
     .container {
-        width: 90%;
+        width: 95%;
+    }
+    
+    .card-body {
+        .voting-form {
+            left: -35px;
+        }
     }
     
     .authors-info {
