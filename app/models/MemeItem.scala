@@ -49,13 +49,14 @@ object ContentTypes {
   val IMAGE_PNG = ".png"
   val IMAGE_JPG = ".jpg"
   val IMAGE_GIF = ".gif"
+  val IMAGE_ICO = ".ico"
 
   val VIDEO_MP4 = ".mp4"
 
   val AUDIO_MP3 = ".mp3"
 
   def isImage(t: String): Boolean = {
-    t == IMAGE_JPG || t == IMAGE_PNG || t == IMAGE_GIF
+    t == IMAGE_JPG || t == IMAGE_PNG || t == IMAGE_GIF || t == IMAGE_ICO
   }
 
   def isVideo(t: String): Boolean = {

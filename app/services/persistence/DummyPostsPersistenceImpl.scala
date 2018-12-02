@@ -118,6 +118,18 @@ class DummyPostsPersistenceImpl @Inject()(
   }
 
 
+  override def countSearchTitles(target: String): IO[Int] = {
+    searchTitles(target, FeedOffset(0,25)).map(_.size)
+  }
+
+  override def countMostPopular(forDays: Int): IO[Int] = {
+    getMostPopular(forDays, FeedOffset(0,25)).map(_.size)
+  }
+
+  override def countLatest(): IO[Int] = {
+    getLatest(FeedOffset(0,25)).map(_.size)
+  }
+
   override def getPostWithComments(id: Long): IO[MemeItemWithComments] = synchronized {
     IO.pure {
       val c = comments.filter(i => i._2.memeId == id).map { case (k, v) =>

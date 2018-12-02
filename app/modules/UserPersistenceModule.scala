@@ -5,6 +5,6 @@ import services.persistence.{DummyUsersPersistenceImpl, PostgresUsersPersistence
 
 class UserPersistenceModule extends AbstractModule {
   override def configure(): Unit = {
-    bind(classOf[UsersPersistence]).to(classOf[PostgresUsersPersistenceImpl])
+    bind(classOf[UsersPersistence]).to(classOf[DummyUsersPersistenceImpl])
   }
 }

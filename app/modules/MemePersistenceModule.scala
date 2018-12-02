@@ -5,6 +5,6 @@ import services.persistence.{DummyPostsPersistenceImpl, PostgresPostsPersistence
 
 class MemePersistenceModule extends AbstractModule {
   override def configure(): Unit = {
-    bind(classOf[PostsPersistence]).to(classOf[PostgresPostsPersistenceImpl])
+    bind(classOf[PostsPersistence]).to(classOf[DummyPostsPersistenceImpl])
   }
 }

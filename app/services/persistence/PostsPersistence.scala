@@ -22,10 +22,6 @@ trait PostsPersistence {
 
   def downVoteComment(id: Long): IO[Long]
 
-  def getMostPopular(forDays: Int, offset: FeedOffset): IO[List[MemeItemWithId]]
-
-  def getLatest(offset: FeedOffset): IO[List[MemeItemWithId]]
-
   def getPostWithComments(id: Long): IO[MemeItemWithComments]
 
   def getContent(memeId: Long, num: Long): IO[Option[Content]]
@@ -35,6 +31,16 @@ trait PostsPersistence {
   def getCommentPoints(id: Long): IO[Long]
 
   def searchTitles(target: String, offset: FeedOffset): IO[List[MemeItemWithId]]
+
+  def getMostPopular(forDays: Int, offset: FeedOffset): IO[List[MemeItemWithId]]
+
+  def getLatest(offset: FeedOffset): IO[List[MemeItemWithId]]
+
+  def countSearchTitles(target: String): IO[Int]
+
+  def countMostPopular(forDays: Int): IO[Int]
+
+  def countLatest(): IO[Int]
 }
 
 object PostsPersistence {

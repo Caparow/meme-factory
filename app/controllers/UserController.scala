@@ -34,7 +34,7 @@ class UserController @Inject()(
     request.body.asFormUrlEncoded.map(_.map { case (k, vs) => k -> vs.head }).map { formData =>
       userService.login(formData("loginField"), formData("passwdField")).convert { user =>
         import deadboltConfig._
-        Redirect(routes.FeedController.hottest()).withSession(
+        Redirect(routes.FeedController.hottest(1)).withSession(
           authTokenKey -> "",
           roleKey -> Role.apply("user").name,
           identifierKey -> user.id.toString
@@ -46,7 +46,7 @@ class UserController @Inject()(
   }
 
   def signOut = Action { implicit request =>
-    Redirect(routes.FeedController.hottest()).withNewSession
+    Redirect(routes.FeedController.hottest(1)).withNewSession
   }
 
   def registerForm = Action.async(parse.multipartFormData) { request =>
@@ -77,7 +77,7 @@ class UserController @Inject()(
 
       userService.register(user).convert { v =>
         import deadboltConfig._
-        Redirect(routes.FeedController.hottest()).withSession(
+        Redirect(routes.FeedController.hottest(1)).withSession(
           authTokenKey -> "",
           roleKey -> Role.apply("user").name,
           identifierKey -> v.id.toString
@@ -118,7 +118,7 @@ class UserController @Inject()(
 
       userService.updateProfile(user).convert { v =>
         import deadboltConfig._
-        Redirect(routes.FeedController.hottest()).withSession(
+        Redirect(routes.FeedController.hottest(1)).withSession(
           authTokenKey -> "",
           roleKey -> Role.apply("user").name,
           identifierKey -> v.id.toString

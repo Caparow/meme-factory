@@ -16,12 +16,13 @@ import io.circe.syntax._
 import models._
 import models.auth.UserRole
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AbstractController, AnyContent, ControllerComponents}
+import play.api.mvc.{AbstractController, AnyContent, Call, ControllerComponents}
 import services.{MemeService, UserService}
 import services.persistence.PostsPersistence.FeedOffset
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
+import FeedController._
 
 @Singleton
 class FeedController @Inject()(
@@ -40,7 +41,7 @@ class FeedController @Inject()(
 
   private def authAction = actionBuilders.RestrictAction(UserRole.name).defaultHandler()
 
-  def search(target: String, feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async { implicit request =>
+  def search(target: String, page: Int) = Action.async { implicit request =>
     import deadboltConfig._
     (for {
       userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
@@ -48,8 +49,9 @@ class FeedController @Inject()(
         case Some(u) => userService.getUser(u).map(_.toOption)
         case None => IO.pure(None)
       }
-      res <- memeService.getTargetPosts(target, feedOffset).convert { memes =>
-        Ok(views.html.feed(memes, uId))
+      total <- memeService.countSearchTitles(target)
+      res <- memeService.getTargetPosts(target, FeedOffset(DEF_LIMIT*(page-1), DEF_LIMIT)).convert { memes =>
+        Ok(views.html.feed(memes, uId, (i: Int) => routes.FeedController.search(target, i), total.getOrElse(1) / DEF_LIMIT,page))
       }
     } yield res).unsafeToFuture()
   }
@@ -68,7 +70,7 @@ class FeedController @Inject()(
     } yield res).unsafeToFuture()
   }
 
-  def hottest(forDays: Int = 1, feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async { implicit request =>
+  def hottest(page: Int, forDays: Int = 5) = Action.async { implicit request =>
     import deadboltConfig._
     (for {
       userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
@@ -76,13 +78,14 @@ class FeedController @Inject()(
         case Some(u) => userService.getUser(u).map(_.toOption)
         case None => IO.pure(None)
       }
-      res <- memeService.getMostPopular(forDays, feedOffset).convert { memes =>
-        Ok(views.html.feed(memes, uId))
+      total <- memeService.countMostPopular(forDays)
+      res <- memeService.getMostPopular(forDays, FeedOffset(DEF_LIMIT*(page-1), DEF_LIMIT)).convert { memes =>
+        Ok(views.html.feed(memes, uId, (i: Int) => routes.FeedController.hottest(i), total.getOrElse(1) / DEF_LIMIT, page))
       }
     } yield res).unsafeToFuture()
   }
 
-  def latest(feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async { request =>
+  def latest(page: Int) = Action.async { request =>
     import deadboltConfig._
     (for {
       userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
@@ -90,8 +93,9 @@ class FeedController @Inject()(
         case Some(u) => userService.getUser(u).map(_.toOption)
         case None => IO.pure(None)
       }
-      res <- memeService.getLatest(feedOffset).convert { memes =>
-        Ok(views.html.feed(memes, uId))
+      total <- memeService.countLatest()
+      res <- memeService.getLatest(FeedOffset(DEF_LIMIT*(page-1), DEF_LIMIT)).convert { memes =>
+        Ok(views.html.feed(memes, uId, (i: Int) => routes.FeedController.latest(i), total.getOrElse(1) / DEF_LIMIT,page))
       }
     } yield res).unsafeToFuture()
   }
@@ -191,7 +195,7 @@ class FeedController @Inject()(
         uId.toLong
       )
       memeService.createMeme(meme).convert { _ =>
-        Redirect(routes.FeedController.hottest())
+        Redirect(routes.FeedController.hottest(1))
       }.unsafeToFuture()
     }
     res.getOrElse(Future(BadRequest("Form is invalid")))
@@ -217,4 +221,9 @@ class FeedController @Inject()(
     Future(Ok(views.html.index("Your new application is ready.")))
   }
 
+}
+
+
+object FeedController {
+  val DEF_LIMIT = 25
 }

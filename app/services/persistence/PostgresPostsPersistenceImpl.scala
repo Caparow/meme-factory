@@ -14,6 +14,19 @@ import services.persistence.PostsPersistence.FeedOffset
 @Singleton
 class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) extends PostsPersistence {
 
+
+  override def countSearchTitles(target: String): IO[Int] = {
+    connector.query(countTargetPostsStmt(target).query[Int].unique)
+  }
+
+  override def countMostPopular(forDays: Int): IO[Int] = {
+    connector.query(countHottestPostsStmt(forDays).query[Int].unique)
+  }
+
+  override def countLatest(): IO[Int] = {
+    connector.query(countLatestPostsStmt().query[Int].unique)
+  }
+
   override def createComment(commentItem: CommentItem): IO[CommentItemWithId] = {
     val commentQuery = for {
       _ <- createCommentStmt(commentItem).update.run
@@ -260,6 +273,27 @@ object PostgresPostsPersistenceImpl {
          |where LOWER(memes.title) ~ '.*($tLower).*'
          |order by added_at
          |limit ${offset.limit} offset ${offset.offset};""".stripMargin)
+  }
+
+  def countHottestPostsStmt(forDays: Int): Fragment = {
+    Fragment.const(
+      s"""select count(memes.id)
+         |from memes
+         |where now() - added_at < '$forDays days'::interval;""".stripMargin)
+  }
+
+  def countLatestPostsStmt(): Fragment = {
+    fr"""select count(memes.id)
+        |from memes
+        |limit 1000;""".stripMargin
+  }
+
+  def countTargetPostsStmt(target: String): Fragment = {
+    val tLower = target.toLowerCase
+    Fragment.const(
+      s"""select count(memes.id)
+         |from memes
+         |where LOWER(memes.title) ~ '.*($tLower).*';""".stripMargin)
   }
 
   def deletePostStmt(id: Long): Fragment = {

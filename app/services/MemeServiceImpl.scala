@@ -66,4 +66,16 @@ class MemeServiceImpl @Inject()(
   override def getTargetPosts(target: String, feedOffset: FeedOffset): Result[List[MemeItemWithId]] = {
     postsPersistence.searchTitles(target, feedOffset).succ
   }
+
+  override def countSearchTitles(target: String): Result[Int] = {
+    postsPersistence.countSearchTitles(target).succ
+  }
+
+  override def countMostPopular(forDays: Int): Result[Int] = {
+    postsPersistence.countMostPopular(forDays).succ
+  }
+
+  override def countLatest(): Result[Int] = {
+    postsPersistence.countLatest().succ
+  }
 }

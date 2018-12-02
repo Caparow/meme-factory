@@ -8,10 +8,13 @@ GET         /                         controllers.Application.index()
 GET         /autherror                controllers.Application.authError(cause : String)
 GET         /error                    controllers.Application.error(cause : String)
 
-GET         /search                   controllers.FeedController.search(target : String)
+GET         /search                   controllers.FeedController.search(target : String, page: Int)
 
-GET         /hottest                  controllers.FeedController.hottest()
-GET         /latest                   controllers.FeedController.latest()
+GET         /converter                controllers.ConverterController.converter
+POST        /convertForm              controllers.ConverterController.convertForm
+
+GET         /hottest                  controllers.FeedController.hottest(page: Int)
+GET         /latest                   controllers.FeedController.latest(page: Int)
 GET         /resource                 controllers.FeedController.resource(memeId : Long, num : Long)
 GET         /avatar                   controllers.UserController.avatarResource(id : Long)
 GET         /signout                  controllers.UserController.signOut

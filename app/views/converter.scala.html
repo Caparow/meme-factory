@@ -1,4 +1,4 @@
-@(userToShow: UserWithId, user: Option[UserWithId] = None)
+@(msg: String)
 
 <!DOCTYPE html>
 
@@ -18,13 +18,13 @@
             <nav class="navbar navbar-expand-lg navbar-light bg-light">
                 <a class="navbar-brand" href="#">
                     <img class="navbar-brand-image" src='@routes.Assets.versioned("images/brand-logo.png")' alt="Meme-factory logo">
-            
+    
                     <div class="navbar-brand-slogan">
                         <h1>Meme Factory</h1>
                         <span class="navbar-brand-slogan--text">Inspire. Create. Post.</span>
                     </div>
                 </a>
-            
+    
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -33,33 +33,16 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item user-nav-item">
-                            <div class="user-panel" id="sidebar" role="navigation">
-                                @user match {
-                                    case Some(u) => {
-                                        <div class="user-image">
-                                            <img src="@routes.UserController.avatarResource(u.id)" width="128" height="128" />
-                                        </div>
-                                        <div class="user-menu">
-                                            <div class="user-login">@{u.login}</div>
-                                            <ul class="user-actions-list">
-                                                <li><a class="user-panel-link" href="@routes.UserController.update()">Settings</a></li>
-                                                <li><a class="user-panel-link" href="@routes.UserController.signOut()">SignOut</a></li>
-                                            </ul>
-                                        </div>
-                                    } 
-                                    
-                                    case None => {
-                                        <div class="user-image">
-                                            <img src='@routes.Assets.versioned("images/unknown-user.png")' width="128" height="128" />
-                                        </div>
-                                        <div class="user-menu">
-                                            <ul class="user-actions-list">
-                                                <li><a class="user-panel-link"  href="@routes.UserController.login()" aria-selected="false">Login</a></li>
-                                                <li><a class="user-panel-link"  href="@routes.UserController.register()" aria-selected="false">Register</a></li>
-                                            </ul>
-                                        </div>
-                                    }
-                                }
+                            <div class="user-panel">
+                                <div class="user-image">
+                                    <img src='@routes.Assets.versioned("images/unknown-user.png")' width="128" height="128" />
+                                </div>
+                                <div class="user-menu">
+                                    <ul class="user-actions-list">
+                                        <li><a class="user-panel-link" href="@routes.UserController.login()" aria-selected="false">Login</a></li>
+                                        <li><a class="user-panel-link" href="@routes.UserController.register()" aria-selected="false">Register</a></li>
+                                    </ul>
+                                </div>
                             </div>
                         </li>
                         <li class="nav-item">
@@ -87,15 +70,25 @@
         </div>
 
         <div class="container">
-            <p>@{userToShow.login}</p>
-            <br>
-            <img src="@routes.UserController.avatarResource(userToShow.id)" width="128" height="128" />
-            <br>
-            <p>
-                Name: @{userToShow.name}
-                <br>
-                Surname: @{userToShow.surname}
-            </p>
+            <h2 class="form-signin-heading">Convert an image:</h2>
+
+            <form class="form-signup" action="/convertForm" method="post" role="form" enctype="multipart/form-data">
+                <div class="form-group">
+                    <label for="targetField">Choose an target image format:</label>
+                    <select class="form-control form-control-lg" name="targetField" id="targetField">
+                        <option>.jpg</option>
+                        <option>.png</option>
+                        <option>.gif</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="imageField">Attach image</label>
+                    <input type="file" accept="image/*" name="imageField" class="form-control-file" id="imageField"
+                    aria-describedby="fileHelp">
+                </div>
+                <input class="btn btn-lg btn-block btn-create-post" type="submit" value="Convert">
+            </form>
         </div>
 
         <footer class="meme-footer">
@@ -103,18 +96,18 @@
                 <div class="footer-brand">
                     <a class="footer-brand-link" href="#">
                         <img class="footer-brand-link-image" src='@routes.Assets.versioned("images/brand-logo.png")' alt="Meme-factory logo">
-        
+                    
                         <div class="footer-brand-link-slogan">
                             <span class="footer-brand-link-slogan--text">Inspire. Create. Post.</span>
                         </div>
                     </a>
                 </div>
-        
+
                 <hr>
-        
+
                 <div class="authors-section">
                     <div class="title">About Authors</div>
-        
+
                     <div class="authors-info">
                         <div class="author-one">
                             <div class="image">
@@ -125,7 +118,7 @@
                                 <div>Back-end "Scala" Ninja</div>
                             </div>
                         </div>
-        
+                      
                         <div class="author-two">
                             <div class="image">
                                 <img src='@routes.Assets.versioned("images/author-logo1.jpg")' alt="Second author">
@@ -138,7 +131,7 @@
                     </div>
                 </div>
             </div>
-        
+
             <div class="footer-copyright">&copy; 2018 Alexander Liubymov &amp; Vadym Hrynishyn <br> All Rights Reserved</div>
         </footer>
 

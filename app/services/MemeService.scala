@@ -32,5 +32,11 @@ trait MemeService extends Result {
   def getCommentPoints(id: Long): Result[Long]
 
   def getTargetPosts(target: String, feedOffset: FeedOffset): Result[List[MemeItemWithId]]
+
+  def countSearchTitles(target: String): Result[Int]
+
+  def countMostPopular(forDays: Int): Result[Int]
+
+  def countLatest(): Result[Int]
 }
 

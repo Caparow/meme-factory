@@ -10,6 +10,8 @@ import services.persistence.PostgresUsersPersistenceImpl._
 @Singleton
 class PostgresUsersPersistenceImpl @Inject()(connector: PostgresConnector) extends UsersPersistence {
 
+
+
   override def create(user: User): IO[UserWithId] = {
     val userQ = for {
       _ <- createUserStmt(user).update.run

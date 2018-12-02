@@ -1,4 +1,4 @@
-@(memeList: List[MemeItemWithId], user: Option[UserWithId] = None)
+@(memeList: List[MemeItemWithId], user: Option[UserWithId] = None, next: Int => Call, total: Int, current: Int)
 
 <!DOCTYPE html>
 
@@ -63,17 +63,21 @@
                             </div>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="@routes.FeedController.hottest()">Hottest</a>
+                            <a class="nav-link" href="@routes.FeedController.hottest(1)">Hottest</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="@routes.FeedController.latest()">Latest</a>
+                            <a class="nav-link" href="@routes.FeedController.latest(1)">Latest</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="@routes.FeedController.createPost()">New Post</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link" href="@routes.ConverterController.converter()">Converter</a>
+                        </li>
+                        <li class="nav-item">
                             <form class="form-inline navbar-search-form" action="/search">
                                 <input class="form-control mr-sm-2 search-input" id="target" name="target" type="text" placeholder="Search" aria-label="Search">
+                                <input id="page" name="page" value="1" type="hidden">
                                 <button class="search-btn" type="submit">Search</button>
                             </form>
                         </li>
@@ -138,7 +142,18 @@
                     </div>
                 </div>
             }
+            @for(i <- (1 to 5).reverse if current-i > 0 ) {
+                <a href="@next(current-i)"> @{current - i} </a>
+            }
+
+            <a href="@next(current)"> @{current} </a>
+
+            @for(i <- 1 to 5 if current+i < total ) {
+                <a href="@next(current+i)"> @{current + i} </a>
+            }
         </div>
+
+
 
         <footer class="meme-footer">
             <div class="footer-inner-wrapper">
