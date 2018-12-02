@@ -46,11 +46,6 @@
                     </div>
                 </a>
             
-                <form class="form-inline navbar-search-form">
-                    <input class="form-control mr-sm-2 search-input" type="search" placeholder="Search" aria-label="Search">
-                    <button class="search-btn" type="submit">Search</button>
-                </form>
-            
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -82,8 +77,8 @@
                             <a class="nav-link" href="@routes.FeedController.createPost()">New Post</a>
                         </li>
                         <li class="nav-item">
-                            <form class="form-inline navbar-search-form">
-                                <input class="form-control mr-sm-2 search-input" type="search" placeholder="Search" aria-label="Search">
+                            <form class="form-inline navbar-search-form" action="/search">
+                                <input class="form-control mr-sm-2 search-input" id="target" name="target" type="text" placeholder="Search" aria-label="Search">
                                 <button class="search-btn" type="submit">Search</button>
                             </form>
                         </li>

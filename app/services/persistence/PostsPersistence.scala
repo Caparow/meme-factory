@@ -33,6 +33,8 @@ trait PostsPersistence {
   def getMemePoints(id: Long): IO[Long]
 
   def getCommentPoints(id: Long): IO[Long]
+
+  def searchTitles(target: String, offset: FeedOffset): IO[List[MemeItemWithId]]
 }
 
 object PostsPersistence {

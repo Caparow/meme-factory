@@ -36,6 +36,14 @@ class DummyPostsPersistenceImpl @Inject()(
     }
   }
 
+  override def searchTitles(target: String, offset: FeedOffset): IO[List[MemeItemWithId]] = synchronized {
+    IO.pure {
+      memes.map { case (k, v) =>
+        import v._
+        MemeItemWithId(k, title, timestamp, content, points, author, usersPersistence.get(author).unsafeRunSync().map(_.login).getOrElse(""))
+      }.toList.filter(_.title.toLowerCase.contains(target.toLowerCase))
+    }
+  }
 
   override def getMemePoints(id: Long): IO[Long] = synchronized {
     IO.pure {
@@ -96,7 +104,6 @@ class DummyPostsPersistenceImpl @Inject()(
         import v._
         MemeItemWithId(k, title, timestamp, content, points, author, usersPersistence.get(author).unsafeRunSync().map(_.login).getOrElse(""))
       }.toList
-
     }
   }
 

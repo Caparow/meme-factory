@@ -40,6 +40,20 @@ class FeedController @Inject()(
 
   private def authAction = actionBuilders.RestrictAction(UserRole.name).defaultHandler()
 
+  def search(target: String, feedOffset: FeedOffset = FeedOffset(0, 25)) = Action.async { implicit request =>
+    import deadboltConfig._
+    (for {
+      userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
+      uId <- userId match {
+        case Some(u) => userService.getUser(u).map(_.toOption)
+        case None => IO.pure(None)
+      }
+      res <- memeService.getTargetPosts(target, feedOffset).convert { memes =>
+        Ok(views.html.feed(memes, uId))
+      }
+    } yield res).unsafeToFuture()
+  }
+
   def post(id: Long) = Action.async { request =>
     import deadboltConfig._
     (for {
@@ -153,7 +167,7 @@ class FeedController @Inject()(
           0,
           uId.toLong
         )
-      ).convert { v =>
+      ).convert { _ =>
         Redirect(routes.FeedController.post(id))
       }.unsafeToFuture()
     }.get

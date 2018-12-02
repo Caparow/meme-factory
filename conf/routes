@@ -8,6 +8,8 @@ GET         /                         controllers.Application.index()
 GET         /autherror                controllers.Application.authError(cause : String)
 GET         /error                    controllers.Application.error(cause : String)
 
+GET         /search                   controllers.FeedController.search(target : String)
+
 GET         /hottest                  controllers.FeedController.hottest()
 GET         /latest                   controllers.FeedController.latest()
 GET         /resource                 controllers.FeedController.resource(memeId : Long, num : Long)

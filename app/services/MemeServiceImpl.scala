@@ -62,4 +62,8 @@ class MemeServiceImpl @Inject()(
   override def getPostWithComments(id: Long): Result[MemeItemWithComments] = {
     postsPersistence.getPostWithComments(id).succ
   }
+
+  override def getTargetPosts(target: String, feedOffset: FeedOffset): Result[List[MemeItemWithId]] = {
+    postsPersistence.searchTitles(target, feedOffset).succ
+  }
 }

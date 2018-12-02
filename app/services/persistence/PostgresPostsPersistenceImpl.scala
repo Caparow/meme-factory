@@ -96,9 +96,16 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
     getMemeList(connector.query(getHottestPostsStmt(forDays, offset).query[MemeItemWithoutContent].to[List]))
   }
 
+  override def searchTitles(target: String, offset: FeedOffset): IO[List[MemeItemWithId]] = {
+    getMemeList(connector.query(getTargetPostsStmt(target, offset).query[MemeItemWithoutContent].to[List]))
+  }
+
   private def getMemeList(f: => IO[List[MemeItemWithoutContent]]) = {
     f.flatMap { mm =>
+      println("all OK")
       mm.map { meme =>
+        println("still OK")
+
         connector.query(getContentStmt(meme.id).query[Content].to[List])
           .map(c => MemeItemWithId(meme.id, meme.title, meme.timestamp, c, meme.points, meme.author, meme.login))
       }.foldLeft(IO.pure(List.empty[MemeItemWithId])) {
@@ -242,6 +249,17 @@ object PostgresPostsPersistenceImpl {
         |join users on memes.author = users.id
         |order by added_at
         |limit ${offset.limit} offset ${offset.offset};""".stripMargin
+  }
+
+  def getTargetPostsStmt(target: String, offset: FeedOffset): Fragment = {
+    val tLower = target.toLowerCase
+    Fragment.const(
+      s"""select memes.id, title, added_at, points, author, users.login
+         |from memes
+         |join users on memes.author = users.id
+         |where LOWER(memes.title) ~ '.*($tLower).*'
+         |order by added_at
+         |limit ${offset.limit} offset ${offset.offset};""".stripMargin)
   }
 
   def deletePostStmt(id: Long): Fragment = {
