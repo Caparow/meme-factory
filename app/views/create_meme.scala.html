@@ -46,6 +46,11 @@
                     </div>
                 </a>
             
+                <form class="form-inline navbar-search-form">
+                    <input class="form-control mr-sm-2 search-input" type="search" placeholder="Search" aria-label="Search">
+                    <button class="search-btn" type="submit">Search</button>
+                </form>
+            
                 <button class="navbar-toggler collapsed" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                     aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -77,12 +82,8 @@
                             <a class="nav-link" href="@routes.FeedController.createPost()">New Post</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="@routes.ConverterController.converter()">Converter</a>
-                        </li>
-                        <li class="nav-item">
-                            <form class="form-inline navbar-search-form" action="/search">
-                                <input class="form-control mr-sm-2 search-input" id="target" name="target" type="text" placeholder="Search" aria-label="Search">
-                                <input id="page" name="page" value="1" type="hidden">
+                            <form class="form-inline navbar-search-form">
+                                <input class="form-control mr-sm-2 search-input" type="search" placeholder="Search" aria-label="Search">
                                 <button class="search-btn" type="submit">Search</button>
                             </form>
                         </li>
@@ -94,20 +95,26 @@
         <div class="container">
             <h2 class="form-signin-heading">Create Post:</h2>
             
-            <form class="form-signup" action="/newPostForm" method="post" role="form" enctype="multipart/form-data">
+            <form class="form-signup" id="newPostForm" action="/newPostForm" method="post" role="form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="titleField" class="sr-only">Title</label>
                     <input type="text" id="titleField" name="titleField" class="form-control" placeholder="Title" required
                         autofocus>
                 </div>
-            
-                <div class="form-group">
-                    <label for="imageField">Attach video or image</label>
-                    <input type="file" accept="image/*,video/*,audio/mpeg" name="imageField" class="form-control-file" id="imageField"
-                        aria-describedby="fileHelp">
-                </div>
-                <input class="btn btn-lg btn-block btn-create-post" type="submit" value="Create">
             </form>
+
+            <div class="add-field-section">
+                <select class="form-control" name="field-types-list" id="fieldTypesList">
+                    <option value="default" selected>Please choose the type of field to add</option>
+                    <option value="text">Text</option>
+                    <option value="file">Multimedia file</option>
+                    <option value="html">Existing HTML</option>
+                </select>
+            
+                <div class="add-field-button" id="addFieldButton" title="Add field"></div>
+            </div>
+
+            <input class="btn btn-lg btn-block btn-create-post" type="submit" form="newPostForm" value="Create">
         </div>
 
         <footer class="meme-footer">

@@ -214,6 +214,7 @@ body {
 .form-control {
     background-color: transparent;
     border-bottom: 1px solid #808080;
+    border-radius: 0;
     color: #808080;
     transition: color .3s ease-out, border-bottom .3s ease-out;
     
@@ -307,6 +308,140 @@ body {
 .encourage-to-sign-up {
     text-align: center;
     margin-bottom: 10px;
+}
+
+.add-field-section {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1rem 0 1.5rem;
+
+    .form-control {
+        cursor: pointer;
+    }
+
+    .add-field-button {
+        display: block;
+        padding: .8rem;
+        background-color: #00bc8c;
+        border-radius: 100%;
+        position: relative;
+        opacity: .7;
+        cursor: pointer;
+        transition: all .3s ease-out;
+        margin-left: 10px;
+        pointer-events: none;
+
+        &.pulsing {
+            animation: pulse 2s infinite;
+            opacity: 1;
+            pointer-events: initial;
+
+            &:hover {
+                animation: none;
+                background-color: #00cc99;
+            }
+
+            &:active {
+                background-color: #009973;
+                animation: none;
+            }
+        }
+
+        &:before, &:after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            width: 60%;
+            height: 60%;
+            border-radius: 5px;
+            border: 1px solid #fff;
+        }
+
+        &:before {
+            height: 0;
+        }
+
+        &:after {
+            width: 0;
+        }
+    }
+}
+
+@-webkit-keyframes pulse {
+    0% {
+        -webkit-box-shadow: 0 0 0 0 rgba(0, 188, 140, .4);
+    }
+    70% {
+        -webkit-box-shadow: 0 0 0 10px rgba(0, 188, 140, 0);
+    }
+    100% {
+        -webkit-box-shadow: 0 0 0 0 rgba(0, 188, 140, 0);
+    }
+}
+
+@keyframes pulse {
+    0% {
+        -moz-box-shadow: 0 0 0 0 rgba(0, 188, 140, .4);
+        box-shadow: 0 0 0 0 rgba(0, 188, 140, .4);
+    }
+    70% {
+        -moz-box-shadow: 0 0 0 10px rgba(0, 188, 140, 0);
+        box-shadow: 0 0 0 10px rgba(0, 188, 140, 0);
+    }
+    100% {
+        -moz-box-shadow: 0 0 0 0 rgba(0, 188, 140, 0);
+        box-shadow: 0 0 0 0 rgba(0, 188, 140, 0);
+    }
+}
+
+.create-meme-field-wrapper {
+    padding-right: 20px;
+    position: relative;
+
+    .form-control-file, .close-meme-field {
+        cursor: pointer;
+    }
+
+    .close-meme-field {
+        position: absolute;
+        top: 0;
+        right: 0;
+        display: block;
+        padding: .5rem;
+
+        &:before, &:after {
+            content: '';
+            display: block;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) rotate(45deg);
+            width: 100%;
+            height: 100%;
+            border-radius: 5px;
+            border: 1px solid #00bc8c;
+            transition: border .3s ease-out;
+        }
+
+        &:hover {
+            &:before, &:after {
+                border-color: #009973;
+            }
+        }
+
+        &:before {
+            height: 0;
+        }
+
+        &:after {
+            width: 0;
+        }
+    }
 }
 
 .comments-wrapper {
