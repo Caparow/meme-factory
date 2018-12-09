@@ -40,7 +40,9 @@ body {
 }
 
 .navbar-wrapper {
+    position: relative;
     box-shadow: 0px 15px 10px -15px #1193A4;
+    z-index: 2;
 }
 
 .navbar.navbar-light {
@@ -252,6 +254,8 @@ body {
     &.container-with-votes {
         padding-left: 25px;
         padding-right: 5px;
+        position: relative;
+        z-index: 1;
     }
 
     .main-feed {
@@ -467,6 +471,18 @@ body {
         flex-direction: column;
         align-items: center;
         justify-content: space-between;
+
+        &.sticked-to-bottom {
+            top: initial;
+            bottom: 0;
+        }
+
+        &.sticked-to-top {
+            position: fixed;
+            top: 0;
+            left: calc(18% + 3px);
+            max-height: 80px;
+        }
         
         .up-vote-post, .down-vote-post {
             background: transparent;
@@ -784,7 +800,7 @@ body {
 
 @media (max-width: 991px) {
     .container {
-        width: 75%;
+        width: 80%;
     }
 
     .navbar.navbar-light {
@@ -942,18 +958,37 @@ body {
     }
 }
 
+@media (max-width: 500px) {
+    .card-body {
+        padding: .9rem;
+    }
+
+    .container {
+        width: 94%;
+    }
+}
+
 @media (min-width: 376px) and (max-width: 414px) {
     body {
         padding-bottom: 550px;
     }
 
     .container {
-        width: 92%;
+        &.container-with-votes {
+            padding-left: 25px;
+        }
     }
 
     .card-body {
         .voting-form {
             left: -38px;
+        
+            &.sticked-to-top {
+                position: fixed;
+                top: 0;
+                left: 0;
+                max-height: 80px;
+            }
         }
     }
 }
@@ -964,12 +999,21 @@ body {
     }
 
     .container {
-        width: 90%;
+        &.container-with-votes {
+            padding-left: 30px;
+        }
     }
 
     .card-body {
         .voting-form {
             left: -40px;
+
+            &.sticked-to-top {
+                position: fixed;
+                top: 0;
+                left: 2px;
+                max-height: 80px;
+            }
         }
     }
 
@@ -1032,12 +1076,18 @@ body {
     }
 
     .container {
-        width: 95%;
+        &.container-with-votes {
+            padding-left: 30px;
+        }
     }
     
     .card-body {
         .voting-form {
-            left: -35px;
+            left: -38px;
+
+            &.sticked-to-top {
+                left: calc(1% - 1px);
+            }
         }
     }
     
