@@ -1,26 +1,5 @@
 @(user: UserWithId)
 
-
-@*<div id="fileContent">*@
-    @*<label for="imageField">Attach video or image</label>*@
-    @*<div class="input-group mb-2">*@
-        @*<div class="custom-file">*@
-            @*<input type="file" accept="image/*,video/*" class="custom-file-input" id="imageField" aria-describedby="fileHelp">*@
-            @*<label class="custom-file-label" for="imageField">Choose file</label>*@
-        @*</div>*@
-    @*</div>*@
-@*</div>*@
-
-@*<div id="textContent">*@
-    @*<label for="textField">Input Your Text</label>*@
-    @*<textarea class="form-control" id="textField" rows="3"></textarea>*@
-@*</div>*@
-
-@*<div id="htmlContent">*@
-    @*<label for="htmlField">Input Your Text</label>*@
-    @*<textarea class="form-control" id="htmlField" rows="3"></textarea>*@
-@*</div>*@
-
 <!DOCTYPE html>
 
 <html>
@@ -80,6 +59,9 @@
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="@routes.FeedController.createPost()">New Post</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="@routes.ConverterController.converter()">Converter</a>
                         </li>
                         <li class="nav-item">
                             <form class="form-inline navbar-search-form">

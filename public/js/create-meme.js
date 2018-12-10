@@ -1,3 +1,5 @@
+var counter = 0;
+
 $(document).ready(function () {
     $('#fieldTypesList').on('change', function (e) {
         var $target = $(e.target),
@@ -8,11 +10,13 @@ $(document).ready(function () {
         } else {
             $addFieldButton.removeClass('pulsing');
         }
-    })
+    });
 
     $('#addFieldButton').on('click', function () {
         var fieldValue = $('#fieldTypesList').val(),
             fieldWrapper, fieldInput, closeButton;
+
+        counter += 1;
 
         switch (fieldValue) {
             case 'text':
@@ -23,16 +27,16 @@ $(document).ready(function () {
                 fieldWrapper.classList.add('form-group', 'create-meme-field-wrapper');
                 fieldInput = document.createElement('input');
                 fieldInput.classList.add('form-control-file');
-                fieldInput.id = 'imageField'
+                fieldInput.id = 'FILE-' + counter.toString();
                 fieldInput.setAttribute('type', 'file');
                 fieldInput.setAttribute('accept', 'image/*,video/*,audio/mpeg');
                 fieldInput.setAttribute('aria-describedby', 'fileHelp');
-                fieldInput.setAttribute('name', 'imageField');
+                fieldInput.setAttribute('name', 'FILE-' + counter.toString());
 
                 closeButton = document.createElement('div');
                 closeButton.className = 'close-meme-field';
 
-                fieldWrapper.append(fieldInput)
+                fieldWrapper.append(fieldInput);
                 fieldWrapper.appendChild(fieldInput);
                 fieldWrapper.appendChild(closeButton);
                 $('#newPostForm').append(fieldWrapper);
@@ -41,7 +45,7 @@ $(document).ready(function () {
                 createTextNode(fieldValue);
                 break;
         }
-    })
+    });
 
     function createTextNode(fieldValue) {
         var fieldWrapper, fieldInput, closeButton;
@@ -52,13 +56,13 @@ $(document).ready(function () {
         fieldInput.classList.add('form-control');
 
         if (fieldValue === 'text') {
-            fieldInput.id = 'textField';
+            fieldInput.id = 'TEXT-' + counter.toString();
             fieldInput.setAttribute('placeholder', 'Meme Text');
-            fieldInput.setAttribute('name', 'textField');
+            fieldInput.setAttribute('name', 'TEXT-' + counter.toString());
         } else {
-            fieldInput.id = 'htmlField';
+            fieldInput.id = 'HTML-' + counter.toString();
             fieldInput.setAttribute('placeholder', 'Meme HTML content');
-            fieldInput.setAttribute('name', 'htmlField');
+            fieldInput.setAttribute('name', 'HTML-' + counter.toString());
         }
 
         closeButton = document.createElement('div');
@@ -70,6 +74,7 @@ $(document).ready(function () {
     }
 
     $(document).on('click', '.close-meme-field', function (e) {
+        counter -= 1;
         $(e.target).parents('.create-meme-field-wrapper').remove();
     })
 });

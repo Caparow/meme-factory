@@ -114,11 +114,8 @@ class PostgresPostsPersistenceImpl @Inject()(connector: PostgresConnector) exten
   }
 
   private def getMemeList(f: => IO[List[MemeItemWithoutContent]]) = {
-    f.flatMap { mm =>
-      println("all OK")
-      mm.map { meme =>
-        println("still OK")
-
+    f.flatMap {
+      _.map { meme =>
         connector.query(getContentStmt(meme.id).query[Content].to[List])
           .map(c => MemeItemWithId(meme.id, meme.title, meme.timestamp, c, meme.points, meme.author, meme.login))
       }.foldLeft(IO.pure(List.empty[MemeItemWithId])) {

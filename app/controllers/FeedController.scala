@@ -16,13 +16,14 @@ import io.circe.syntax._
 import models._
 import models.auth.UserRole
 import play.api.libs.ws.WSClient
-import play.api.mvc.{AbstractController, AnyContent, Call, ControllerComponents}
+import play.api.mvc._
 import services.{MemeService, UserService}
 import services.persistence.PostsPersistence.FeedOffset
 
 import scala.concurrent.{ExecutionContext, Future}
 import scala.util.Try
 import FeedController._
+import play.api.libs.Files.TemporaryFile
 
 @Singleton
 class FeedController @Inject()(
@@ -41,29 +42,43 @@ class FeedController @Inject()(
 
   private def authAction = actionBuilders.RestrictAction(UserRole.name).defaultHandler()
 
-  def search(target: String, page: Int) = Action.async { implicit request =>
+  private def getUser(implicit request: Request[AnyContent]) = {
     import deadboltConfig._
-    (for {
+    for {
       userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
       uId <- userId match {
         case Some(u) => userService.getUser(u).map(_.toOption)
         case None => IO.pure(None)
       }
-      total <- memeService.countSearchTitles(target)
-      res <- memeService.getTargetPosts(target, FeedOffset(DEF_LIMIT*(page-1), DEF_LIMIT)).convert { memes =>
-        Ok(views.html.feed(memes, uId, (i: Int) => routes.FeedController.search(target, i), total.getOrElse(1) / DEF_LIMIT,page))
-      }
+    } yield uId
+  }
+
+  private def feedList(page: Int, getMemes: FeedOffset => Result[List[MemeItemWithId]], getTotal: => Result[Int], next: Int => Call, errorOnEmpty: String)(implicit request: Request[AnyContent]): Future[play.api.mvc.Result] = {
+    (for {
+      uId <- getUser
+      total <- getTotal
+      res <-
+        if (total.exists(_ != 0)) {
+          getMemes(FeedOffset(DEF_LIMIT * (page - 1), DEF_LIMIT)).convert { memes =>
+            Ok(views.html.feed(memes, uId, next: Int => Call, total.getOrElse(1) / DEF_LIMIT, page))
+          }
+        } else IO.pure(Ok(views.html.error(errorOnEmpty)))
     } yield res).unsafeToFuture()
   }
 
-  def post(id: Long) = Action.async { request =>
-    import deadboltConfig._
+  def search(target: String, page: Int) = Action.async { implicit request =>
+    feedList(
+      page,
+      (f: FeedOffset) => memeService.getTargetPosts(target, f),
+      memeService.countSearchTitles(target),
+      (i: Int) => routes.FeedController.search(target, i),
+      errorOnEmpty = "There is no such posts."
+    )
+  }
+
+  def post(id: Long) = Action.async { implicit request =>
     (for {
-      userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
-      uId <- userId match {
-        case Some(u) => userService.getUser(u).map(_.toOption)
-        case None => IO.pure(None)
-      }
+      uId <- getUser
       res <- memeService.getPostWithComments(id).convert { post =>
         Ok(views.html.post(post, uId))
       }
@@ -71,33 +86,23 @@ class FeedController @Inject()(
   }
 
   def hottest(page: Int, forDays: Int = 5) = Action.async { implicit request =>
-    import deadboltConfig._
-    (for {
-      userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
-      uId <- userId match {
-        case Some(u) => userService.getUser(u).map(_.toOption)
-        case None => IO.pure(None)
-      }
-      total <- memeService.countMostPopular(forDays)
-      res <- memeService.getMostPopular(forDays, FeedOffset(DEF_LIMIT*(page-1), DEF_LIMIT)).convert { memes =>
-        Ok(views.html.feed(memes, uId, (i: Int) => routes.FeedController.hottest(i), total.getOrElse(1) / DEF_LIMIT, page))
-      }
-    } yield res).unsafeToFuture()
+    feedList(
+      page,
+      (f: FeedOffset) =>memeService.getMostPopular(forDays, f),
+      memeService.countMostPopular(forDays),
+      routes.FeedController.hottest,
+      errorOnEmpty = "Current memes list are empty.\n Wait till someone will create a new meme.\n OR TRY TO CREATE THEM YOURSELF! "
+    )
   }
 
-  def latest(page: Int) = Action.async { request =>
-    import deadboltConfig._
-    (for {
-      userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
-      uId <- userId match {
-        case Some(u) => userService.getUser(u).map(_.toOption)
-        case None => IO.pure(None)
-      }
-      total <- memeService.countLatest()
-      res <- memeService.getLatest(FeedOffset(DEF_LIMIT*(page-1), DEF_LIMIT)).convert { memes =>
-        Ok(views.html.feed(memes, uId, (i: Int) => routes.FeedController.latest(i), total.getOrElse(1) / DEF_LIMIT,page))
-      }
-    } yield res).unsafeToFuture()
+  def latest(page: Int) = Action.async { implicit request =>
+    feedList(
+      page,
+      (f: FeedOffset) => memeService.getLatest(f),
+      memeService.countLatest(),
+      routes.FeedController.latest,
+      errorOnEmpty = "Current memes list are empty.\n Wait till someone will create a new meme.\n OR TRY TO CREATE THEM YOURSELF! "
+    )
   }
 
   def resource(memeId: Long, num: Long) = Action.async {
@@ -119,23 +124,24 @@ class FeedController @Inject()(
     }.unsafeToFuture()
   }
 
+  //todo: fix this bullshit
   private def vote(id: Long, mark: Int, contentType: String)
-                  (vote: (Long, Long) => IO[Either[ServiceException, Long]])
+                  (voteOnItem: (Long, Long) => IO[Either[ServiceException, Long]])
                   (getPoints: Long => IO[Either[ServiceException, Long]])
-                  (implicit request: AuthenticatedRequest[AnyContent]) = {
+                  (implicit request: AuthenticatedRequest[AnyContent]) = synchronized {
     val uId: Long = request.session.get(deadboltConfig.identifierKey).flatMap(i => Try(i.toLong).toOption).getOrElse(0)
     userService.getUserMark(id, uId, contentType).flatMap {
       case Right(m) =>
         m match {
           case Some(um) =>
             if (um == 0) {
-              userService.updateUserMark(mark, id, uId, contentType).flatMap { _ => vote(uId, id) }
+              userService.updateUserMark(mark, id, uId, contentType).flatMap { _ => voteOnItem(uId, id) }
             } else if (um == mark) {
               getPoints(id)
             } else {
-              userService.updateUserMark(0, id, uId, contentType).flatMap { _ => vote(uId, id) }
+              userService.updateUserMark(0, id, uId, contentType).flatMap { _ => voteOnItem(uId, id) }
             }
-          case None => userService.setUserMark(mark, id, uId, contentType).flatMap { _ => vote(uId, id) }
+          case None => userService.setUserMark(mark, id, uId, contentType).flatMap { _ => voteOnItem(uId, id) }
         }
       case Left(f) => IO.pure(Left(f))
     }.convert { memes =>
@@ -144,19 +150,19 @@ class FeedController @Inject()(
   }
 
   def upVotePost(id: Long) = authAction { implicit request =>
-    vote(id,1,"meme")(memeService.upVoteMeme)(memeService.getMemePoints)
+    vote(id, 1, "meme")(memeService.upVoteMeme)(memeService.getMemePoints)
   }
 
   def downVotePost(id: Long) = authAction { implicit request =>
-    vote(id,-1,"meme")(memeService.downVoteMeme)(memeService.getMemePoints)
+    vote(id, -1, "meme")(memeService.downVoteMeme)(memeService.getMemePoints)
   }
 
   def upVoteComment(id: Long) = authAction { implicit request =>
-    vote(id,1,"comment")(memeService.upVoteComment)(memeService.getCommentPoints)
+    vote(id, 1, "comment")(memeService.upVoteComment)(memeService.getCommentPoints)
   }
 
   def downVoteComment(id: Long) = authAction { implicit request =>
-    vote(id,-1,"comment")(memeService.downVoteComment)(memeService.getCommentPoints)
+    vote(id, -1, "comment")(memeService.downVoteComment)(memeService.getCommentPoints)
   }
 
   def newCommentForm(id: Long) = authAction { implicit request =>
@@ -177,23 +183,45 @@ class FeedController @Inject()(
     }.get
   }
 
+  private def getTypeNumber(s: String): (String, Int) = {
+    s.split("-").toList match {
+      case t :: n :: Nil => (t, n.toInt)
+      case _ => ("", 0)
+    }
+  }
+
+  private def createFilesContent[A](files: Seq[play.api.mvc.MultipartFormData.FilePart[TemporaryFile]]) = {
+    files.map { file =>
+      val (_, number) = getTypeNumber(file.key)
+      val encoded = Base64.getEncoder.encodeToString(Files.readAllBytes(Paths.get(file.ref.file.getAbsolutePath)))
+      val filename = Paths.get(file.filename).getFileName.toString
+      val cType = filename.substring(filename.lastIndexOf("."))
+      Content(0, cType, encoded, number)
+    }.toList
+  }
+
   def createPostForm = authAction(parse.multipartFormData) { implicit request =>
     val uId = request.session.get(deadboltConfig.identifierKey).getOrElse("")
     val dataParts = request.body.dataParts
+
     val res = for {
       title <- dataParts.get("titleField").flatMap(_.headOption)
-      image <- request.body.file("imageField")
-    } yield {
-      val encoded = Base64.getEncoder.encodeToString(Files.readAllBytes(Paths.get(image.ref.file.getAbsolutePath)))
-      val filename = Paths.get(image.filename).getFileName.toString
-      val cType = filename.substring(filename.lastIndexOf("."))
-      val meme = MemeItem(
+      data = dataParts - "titleField"
+
+      filesContent = createFilesContent(request.body.files)
+      dataContent = data.flatMap { case (k, v) =>
+        val (key, number) = getTypeNumber(k)
+        v.map(vv => Content(0, key, vv, number))
+      }.toList
+
+      meme = MemeItem(
         title,
         ZonedDateTime.now().withZoneSameInstant(ZoneId.of("UTC")).toLocalDateTime,
-        List(Content(0, cType, encoded, 1), Content(0, ContentTypes.HTML, "some", 2)),
+        filesContent ++ dataContent,
         0,
         uId.toLong
       )
+    } yield {
       memeService.createMeme(meme).convert { _ =>
         Redirect(routes.FeedController.hottest(1))
       }.unsafeToFuture()
@@ -201,14 +229,9 @@ class FeedController @Inject()(
     res.getOrElse(Future(BadRequest("Form is invalid")))
   }
 
-  def createPost() = authAction { request =>
-    import deadboltConfig._
+  def createPost() = authAction { implicit request =>
     (for {
-      userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
-      uId <- userId match {
-        case Some(u) => userService.getUser(u).map(_.toOption)
-        case None => IO.pure(None)
-      }
+      uId <- getUser
       res = Ok(views.html.create_meme(uId.get))
     } yield res).unsafeToFuture()
   }

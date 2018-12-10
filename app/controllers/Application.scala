@@ -17,7 +17,7 @@ class Application @Inject()(
                            )(implicit ec: ExecutionContext) extends AbstractController(cc) {
 
   def index = Action { _ =>
-    Results.Redirect(routes.UserController.login())
+    Results.Redirect(routes.FeedController.hottest(1))
   }
 
   def error(m: String) = Action { _ =>
