@@ -42,7 +42,7 @@ class FeedController @Inject()(
 
   private def authAction = actionBuilders.RestrictAction(UserRole.name).defaultHandler()
 
-  private def getUser(implicit request: Request[AnyContent]) = {
+  private def getUser(implicit request: Request[AnyContent]): IO[Option[UserWithId]] = {
     import deadboltConfig._
     for {
       userId <- IO.pure(request.session.get(identifierKey).flatMap(i => Try(i.toLong).toOption))
@@ -62,11 +62,11 @@ class FeedController @Inject()(
           getMemes(FeedOffset(DEF_LIMIT * (page - 1), DEF_LIMIT)).convert { memes =>
             Ok(views.html.feed(memes, uId, next: Int => Call, total.getOrElse(1) / DEF_LIMIT, page))
           }
-        } else IO.pure(Ok(views.html.error(errorOnEmpty)))
+        } else IO.pure(Ok(views.html.error(errorOnEmpty, uId)))
     } yield res).unsafeToFuture()
   }
 
-  def search(target: String, page: Int) = Action.async { implicit request =>
+  def search(target: String, page: Int): Action[AnyContent] = Action.async { implicit request =>
     feedList(
       page,
       (f: FeedOffset) => memeService.getTargetPosts(target, f),
@@ -76,7 +76,7 @@ class FeedController @Inject()(
     )
   }
 
-  def post(id: Long) = Action.async { implicit request =>
+  def post(id: Long): Action[AnyContent] = Action.async { implicit request =>
     (for {
       uId <- getUser
       res <- memeService.getPostWithComments(id).convert { post =>
@@ -85,7 +85,7 @@ class FeedController @Inject()(
     } yield res).unsafeToFuture()
   }
 
-  def hottest(page: Int, forDays: Int = 5) = Action.async { implicit request =>
+  def hottest(page: Int, forDays: Int = 5): Action[AnyContent] = Action.async { implicit request =>
     feedList(
       page,
       (f: FeedOffset) =>memeService.getMostPopular(forDays, f),
@@ -95,7 +95,7 @@ class FeedController @Inject()(
     )
   }
 
-  def latest(page: Int) = Action.async { implicit request =>
+  def latest(page: Int): Action[AnyContent] = Action.async { implicit request =>
     feedList(
       page,
       (f: FeedOffset) => memeService.getLatest(f),
@@ -105,7 +105,7 @@ class FeedController @Inject()(
     )
   }
 
-  def resource(memeId: Long, num: Long) = Action.async {
+  def resource(memeId: Long, num: Long): Action[AnyContent] = Action.async {
     memeService.getContent(memeId, num).convert { content =>
       val bytes = Base64.getDecoder.decode(content.content)
       val tempFile = File.createTempFile("resource", content.contentType)
@@ -190,7 +190,7 @@ class FeedController @Inject()(
     }
   }
 
-  private def createFilesContent[A](files: Seq[play.api.mvc.MultipartFormData.FilePart[TemporaryFile]]) = {
+  private def createFilesContent[A](files: Seq[play.api.mvc.MultipartFormData.FilePart[TemporaryFile]]): List[Content] = {
     files.map { file =>
       val (_, number) = getTypeNumber(file.key)
       val encoded = Base64.getEncoder.encodeToString(Files.readAllBytes(Paths.get(file.ref.file.getAbsolutePath)))
@@ -200,7 +200,7 @@ class FeedController @Inject()(
     }.toList
   }
 
-  def createPostForm = authAction(parse.multipartFormData) { implicit request =>
+  def createPostForm: Action[MultipartFormData[TemporaryFile]] = authAction(parse.multipartFormData) { implicit request =>
     val uId = request.session.get(deadboltConfig.identifierKey).getOrElse("")
     val dataParts = request.body.dataParts
 
