@@ -515,6 +515,16 @@ body {
             margin: 0;
         }
     }
+
+    .card-html-wrapper {
+        max-width: 100%;
+        text-align: center;
+        
+        > * {
+            max-width: 100%;
+            margin: auto;
+        }
+    }
 }
 
 .login-field, .password-field, .firstname-field, .surname-field {

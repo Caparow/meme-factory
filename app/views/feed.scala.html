@@ -112,7 +112,11 @@
                         @for(c <- meme.content.sortWith(_.num < _.num)) {
                             @c.contentType match {
                                 case "TEXT" => { <p class="card-text"> @{ c.content } </p> }
-                                case "HTML" => { @{ api.Html(c.content) } }
+                                case "HTML" => {
+                                    <div class="card-html-wrapper">
+                                        @{ api.Html(c.content) }
+                                    </div> 
+                                }
                                 case tt if ContentTypes.isImage(tt) => { <div class="card-image-wrapper"><img class="card-img" src="@routes.FeedController.resource(c.memeID, c.num)" /></div> }
                                 case tt if ContentTypes.isVideo(tt) => {
                                     <div class="embed-responsive embed-responsive-16by9">
