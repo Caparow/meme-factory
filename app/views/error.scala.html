@@ -87,12 +87,18 @@
       </nav>
     </div>
 
-    <div class="container container-with-votes">
-        <div class="card">
-          <div class="card-body">
-            <p class="card-header"> @msg </p>
-          </div>
-        </div>
+    <div class="container container-with-votes no-posts-message-wrapper">
+      <div class="no-posts-message">
+        <span>@msg</span>
+        <hr class="encourage-to-sign-up-hr">
+        <span>
+          <span>Not autorized? Try to</span>
+          <a class="user-panel-link" href="@routes.UserController.login()" aria-selected="false">login</a>
+          <span>or</span>
+          <a class="user-panel-link" href="@routes.UserController.register()" aria-selected="false">register</a>
+          <span>first and enjoy using our Meme Factory!</span>
+        </span>
+      </div>
     </div>
 
 

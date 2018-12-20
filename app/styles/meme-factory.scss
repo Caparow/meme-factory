@@ -78,6 +78,7 @@ body {
         .nav-link {
             color: #fff;
             transition: color .3s ease-out;
+            white-space: nowrap;
 
             &:hover {
                 color: #fff;
@@ -247,6 +248,12 @@ body {
     }
 }
 
+.form-comment {
+    label {
+        color: #00bc8c;
+    }
+}
+
 .container {
     width: 60%;
     margin: auto;
@@ -258,15 +265,97 @@ body {
         z-index: 1;
     }
 
-    .main-feed {
-        .card-img {
-            max-width: 500px;
-        }
+    .card-img {
+        max-width: 100%;
+        display: block;
+        margin: 0 auto 10px auto;
+    }
+
+    .numbers-of-pages {
+        position: relative;
+        display: block;
+        text-align: center;
+    }
+}
+
+.no-posts-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    font-size: 1.2rem;
+    padding: 10px 0;
+
+    a {
+        text-decoration: underline;
+    }
+
+    & > span:first-child {
+        text-transform: uppercase;
+        margin-bottom: 10px;
     }
 }
 
 .form-signin-heading, .form-signin-subheading {
     text-align: center;
+}
+
+.multiple-heading-wrapper {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0 2rem;
+    background-image: linear-gradient(rgba(0, 0, 0, .5), rgba(0, 0, 0, 0));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.image-heading-wrapper {
+    position: relative;
+    display: block;
+    height: 300px;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 15px;
+
+    &.converter {
+        background-image: url(../images/convert-background.png);
+    }
+
+    &.create-post {
+        background-image: url(../images/create-post-background.png);
+    }
+
+    &.login {
+        background-image: url(../images/login-background.jpg);
+    }
+
+    &.signup {
+        background-image: url(../images/signup-background.jpg);
+    }
+
+    & > .form-signin-heading {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        height: 100%;
+        width: 100%;
+        box-sizing: border-box;
+        padding: 0 2rem;
+        background-image: linear-gradient(rgba(0, 0, 0, .6), rgba(0, 0, 0, .4), rgba(0, 0, 0, .1));
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 }
 
 .form-signin-subheading {
@@ -290,6 +379,7 @@ body {
     background-color: #007e99;
     color: #fff;
     width: 100%;
+    margin-bottom: 10px;
 
     &:hover {
         background-color: #00677e !important;
@@ -513,6 +603,8 @@ body {
 
         .card-title {
             margin: 0;
+            color: #00bc8c;
+            cursor: default;
         }
     }
 
@@ -566,6 +658,7 @@ body {
 
 .attach-profile-image {
     margin: 10px 0 20px;
+    color: gray;
 
     label, input {
         cursor: pointer;
@@ -596,8 +689,12 @@ body {
         cursor: pointer;
 
         img {
-            width: 60px;
+            width: 100%;
             height: auto;
+            position: relative;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
         }
     }
 

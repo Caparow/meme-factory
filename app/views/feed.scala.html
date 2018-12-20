@@ -147,15 +147,18 @@
                     </div>
                 </div>
             }
-            @for(i <- (1 to 5).reverse if current-i > 0 ) {
-                <a href="@next(current-i)"> @{current - i} </a>
-            }
 
-            <a href="@next(current)"> @{current} </a>
-
-            @for(i <- 1 to 5 if current+i < total ) {
-                <a href="@next(current+i)"> @{current + i} </a>
-            }
+            <div class="numbers-of-pages">
+                @for(i <- (1 to 5).reverse if current-i> 0 ) {
+                    <a href="@next(current-i)"> @{current - i} </a>
+                }
+            
+                <a href="@next(current)"> @{current} </a>
+            
+                @for(i <- 1 to 5 if current+i < total ) {
+                    <a href="@next(current+i)"> @{current + i} </a>
+                }
+            </div>
         </div>
 
 

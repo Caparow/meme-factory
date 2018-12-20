@@ -91,7 +91,7 @@ class FeedController @Inject()(
       (f: FeedOffset) =>memeService.getMostPopular(forDays, f),
       memeService.countMostPopular(forDays),
       routes.FeedController.hottest,
-      errorOnEmpty = "Current memes list are empty.\n Wait till someone will create a new meme.\n OR TRY TO CREATE THEM YOURSELF! "
+      errorOnEmpty = "Current memes list is empty.\n Wait till someone creates a new meme.\n OR TRY TO CREATE THEM YOURSELF! "
     )
   }
 
@@ -101,7 +101,7 @@ class FeedController @Inject()(
       (f: FeedOffset) => memeService.getLatest(f),
       memeService.countLatest(),
       routes.FeedController.latest,
-      errorOnEmpty = "Current memes list are empty.\n Wait till someone will create a new meme.\n OR TRY TO CREATE THEM YOURSELF! "
+      errorOnEmpty = "Current memes list is empty.\n Wait till someone creates a new meme.\n OR TRY TO CREATE THEM YOURSELF! "
     )
   }
 

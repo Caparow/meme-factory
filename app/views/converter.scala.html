@@ -70,11 +70,13 @@
         </div>
 
         <div class="container">
-            <h2 class="form-signin-heading">Convert an image:</h2>
+            <div class="image-heading-wrapper converter">
+                <h2 class="form-signin-heading">Convert your image</h2>
+            </div>
 
             <form class="form-signup" action="/convertForm" method="post" role="form" enctype="multipart/form-data">
                 <div class="form-group">
-                    <label for="targetField">Choose an target image format:</label>
+                    <label for="targetField">Choose the target image format:</label>
                     <select class="form-control form-control-lg" name="targetField" id="targetField">
                         <option>.jpg</option>
                         <option>.png</option>

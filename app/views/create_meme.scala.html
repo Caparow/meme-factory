@@ -39,7 +39,7 @@
                     <ul class="navbar-nav mr-auto">
                         <li class="nav-item user-nav-item">
                             <div class="user-panel" id="sidebar" role="navigation">
-                                <div class="user-image">
+                                <div class="user-image" style="background-image: url(@routes.UserController.avatarResource(user.id))">
                                     <img src="@routes.UserController.avatarResource(user.id)" />
                                 </div>
                                 <div class="user-menu">
@@ -75,7 +75,9 @@
         </div>
 
         <div class="container">
-            <h2 class="form-signin-heading">Create Post:</h2>
+            <div class="image-heading-wrapper create-post">
+                <h2 class="form-signin-heading">Create a Post</h2>
+            </div>
             
             <form class="form-signup" id="newPostForm" action="/newPostForm" method="post" role="form" enctype="multipart/form-data">
                 <div class="form-group">

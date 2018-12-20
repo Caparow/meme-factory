@@ -110,7 +110,11 @@
                     @for(c <- meme.memeItem.content.sortWith(_.num < _.num)) {
                         @c.contentType match {
                             case "TEXT" => { <p class="card-text"> @{ c.content } </p> }
-                            case "HTML" => { @{ Html(c.content) } }
+                            case "HTML" => {
+                                <div class="card-html-wrapper">
+                                    @{ Html(c.content) }
+                                </div>
+                            }
                             case tt if ContentTypes.isImage(tt) => { <img class="card-img" src="@routes.FeedController.resource(c.memeID, c.num)" /> }
                             case tt if ContentTypes.isVideo(tt) => {
                                 <div class="embed-responsive embed-responsive-16by9">
@@ -180,7 +184,7 @@
                         <textarea class="form-control" name="textField" id="textField" rows="3"></textarea>
                     </div>
                 </div>
-                <input class="btn btn-lg btn-block btn-create-comment" type="submit" value="Create">
+                <input class="btn btn-lg btn-block btn-create-comment" type="submit" value="Comment">
             </form>
         </div>
 
